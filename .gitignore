@@ -13,4 +13,4 @@ beken_os/tools/generate/*.bin
 !beken_os/tools/generate/t2_bootloader_enc.bin
 !beken_os/tools/generate/package.bin
 qt_proj/
-toolchain/gcc-arm-none-eabi-4_9-2015q1
+gcc-arm-none-eabi-10.3-2021.10

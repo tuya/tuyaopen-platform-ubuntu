@@ -1,65 +1,81 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# set -e
+set -e
 
-TOOLCHAIN_NAME=gcc-arm-none-eabi-4_9-2015q1
+TOP_DIR=$(pwd)
+echo $TOP_DIR
 
-cd toolchain
+echo "Start board prepare ..."
+
+TOOLCHAIN_NAME=gcc-arm-none-eabi-10.3-2021.10
+
 if [ -d "$TOOLCHAIN_NAME" ]; then
     if [ -n "$(ls -A $TOOLCHAIN_NAME)" ]; then
         echo "Toolchain $TOOLCHAIN_NAME check Successful"
+        echo "Run board prepare success ..."
         exit 0
     fi
 fi
 
 echo "Start download toolchain"
-restult=$(curl -m 15 -s http://www.ip-api.com/json)
-country=$(echo $restult | sed 's/.*"country":"\([^"]*\)".*/\1/')
-echo "country: $country"
+# restult=$(curl -m 15 -s http://www.ip-api.com/json)
+# country=$(echo $restult | sed 's/.*"country":"\([^"]*\)".*/\1/')
+# echo "country: $country"
+
+HOST_MACHINE=$(uname -m)
 
 case "$(uname -s)" in
 Linux*)
 	SYSTEM_NAME="Linux"
-    if [ $country = "China" ]; then
-        TOOLCHAIN_URL=https://images.tuyacn.com/rms-static/4720f5e0-a2ca-11ee-8cd8-b117287658f4-1703470015550.tar.bz2?tyName=gcc-arm-none-eabi-4_9-2015q1-20150306-linux.tar.bz2
+    if [ $HOST_MACHINE = "x86_64" ]; then
+        TOOLCHAIN_URL=https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
+        TOOLCHAIN_FILE=gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
+    elif [ $HOST_MACHINE = "aarch64" ]; then
+        TOOLCHAIN_URL=https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-aarch64-linux.tar.bz2
+        TOOLCHAIN_FILE=gcc-arm-none-eabi-10.3-2021.10-aarch64-linux.tar.bz2
     else
-        TOOLCHAIN_URL=https://github.com/tuya/T2/releases/download/0.0.1/gcc-arm-none-eabi-4_9-2015q1-20150306-linux.tar.bz2
+        echo "Toolchain not support, Please download toolchain from https://developer.arm.com/downloads/-/gnu-rm"
+        exit 1
     fi
-    TOOLCHAIN_FILE=gcc-arm-none-eabi-4_9-2015q1.tar.bz2
 	;;
 Darwin*)
 	SYSTEM_NAME="Apple"
-    exit 1
+    if [ $HOST_MACHINE = "x86_64" ]; then
+        TOOLCHAIN_URL=https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-mac.tar.bz2
+        TOOLCHAIN_FILE=gcc-arm-none-eabi-10.3-2021.10-mac.tar.bz2
+    else
+        echo "Toolchain not support, Please download toolchain from https://developer.arm.com/downloads/-/gnu-rm"
+        exit 1
+    fi
 	;;
 MINGW* | CYGWIN* | MSYS*)
 	SYSTEM_NAME="Windows"
-    if [ $country = "China" ]; then
-        TOOLCHAIN_URL=https://images.tuyacn.com/rms-static/47233fd0-a2ca-11ee-af19-cfa45f6de59e-1703470015565.zip?tyName=gcc-arm-none-eabi-4_9-2015q1-20150306-win32.zip
-    else
-        TOOLCHAIN_URL=https://github.com/tuya/T2/releases/download/0.0.1/gcc-arm-none-eabi-4_9-2015q1-20150306-win32.zip
-    fi
-    TOOLCHAIN_FILE=gcc-arm-none-eabi-4_9-2015q1.zip
+    TOOLCHAIN_URL=https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-win32.zip
+    TOOLCHAIN_FILE=gcc-arm-none-eabi-10.3-2021.10-win32.zip
 	;;
 *)
 	SYSTEM_NAME="Unknown"
     exit 1
 	;;
 esac
+
 echo "Running on [$SYSTEM_NAME]"
 
-FILE_EXTENSION=${TOOLCHAIN_FILE#*.}
-
+FILE_EXTENSION=${TOOLCHAIN_FILE##*.}
 
 wget $TOOLCHAIN_URL -O $TOOLCHAIN_FILE
 echo "start decompression"
-if [ $FILE_EXTENSION = "tar.bz2" ]; then
+echo "FILE_EXTENSION: ${FILE_EXTENSION}"
+if [ $FILE_EXTENSION = "bz2" ]; then
     tar -xvf $TOOLCHAIN_FILE
 elif [ $FILE_EXTENSION = "zip" ]; then
     mkdir -p $TOOLCHAIN_NAME
     unzip $TOOLCHAIN_FILE -d $TOOLCHAIN_NAME
 else
     echo "File not support"
+    exit 1
 fi
 
 rm -rf $TOOLCHAIN_FILE
 
+echo "Run board prepare success ..."

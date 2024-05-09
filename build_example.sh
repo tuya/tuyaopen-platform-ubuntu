@@ -71,7 +71,7 @@ if ! type make >/dev/null 2>&1; then
 	exit 1;
 fi
 
-TOOLCHAIN=toolchain/gcc-arm-none-eabi-4_9-2015q1/bin
+TOOLCHAIN=gcc-arm-none-eabi-10.3-2021.10/bin
 export ARM_GCC_TOOLCHAIN=${TOOLCHAIN}
 
 GCC_VERSION=$(${TOOLCHAIN}/arm-none-eabi-gcc --version)

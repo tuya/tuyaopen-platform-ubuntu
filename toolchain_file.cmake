@@ -8,7 +8,7 @@ set(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR Linux)
 
 # 设置工具链目录
-set(TOOLCHAIN_DIR "${BOARD_PATH}/toolchain/gcc-arm-none-eabi-4_9-2015q1")
+set(TOOLCHAIN_DIR "${BOARD_PATH}/gcc-arm-none-eabi-10.3-2021.10")
 set(TOOLCHAIN_PRE "arm-none-eabi-")
 
 # set(TOOLCHAIN_INCLUDE
