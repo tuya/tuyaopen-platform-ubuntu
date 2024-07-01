@@ -22,7 +22,7 @@ typedef struct
     unsigned long   start;
     unsigned long   current;
 } TUYA_OS_STORAGE_TIMER;
-//flash ×î´ó³ÖÐø´¦ÀíÊ±¼ä
+//flash ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
 #define FLASH_MAX_HANDLE_KEEP_TIME 10000    //10s
 
 /* TODO: need to consider whether to use locks at the TKL layer*/
@@ -46,12 +46,12 @@ extern int hal_flash_unlock(void);
 
 #if defined(KV_PROTECTED_ENABLE) && (KV_PROTECTED_ENABLE==1)
     #define PROTECTED_DATA_ADDR (0x200000 - 0x3000 - 0xE000 - 0x1000 - 0x1000)// protected data (1 block)
-    #define PROTECTED_FLASH_HUGE_SZ 0x1000 // 4k  ²»¹²»ùµÄ¿é´óÐ¡
+    #define PROTECTED_FLASH_HUGE_SZ 0x1000 // 4k  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½Ð¡
 #endif
 
 
 /**
- * @brief flash ÉèÖÃ±£»¤,enable ÉèÖÃtureÎªÈ«±£»¤£¬falseÎª°ë±£»¤
+ * @brief flash ï¿½ï¿½ï¿½Ã±ï¿½ï¿½ï¿½,enable ï¿½ï¿½ï¿½ï¿½tureÎªÈ«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½falseÎªï¿½ë±£ï¿½ï¿½
  *
  * @return OPRT_OK
  */
@@ -99,7 +99,7 @@ static unsigned int __uni_flash_is_protect_all(void)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-OPERATE_RET tkl_flash_read(UINT32_T addr, UCHAR_T *dst, UINT32_T size)
+OPERATE_RET tkl_flash_read(uint32_t addr, UCHAR_T *dst, uint32_t size)
 {
     // --- BEGIN: user implements ---
     unsigned int status;
@@ -134,7 +134,7 @@ OPERATE_RET tkl_flash_read(UINT32_T addr, UCHAR_T *dst, UINT32_T size)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-OPERATE_RET tkl_flash_write(UINT32_T addr, CONST UCHAR_T *src, UINT32_T size)
+OPERATE_RET tkl_flash_write(uint32_t addr, const UCHAR_T *src, uint32_t size)
 {
     // --- BEGIN: user implements ---
     DD_HANDLE flash_handle;
@@ -151,7 +151,7 @@ OPERATE_RET tkl_flash_write(UINT32_T addr, CONST UCHAR_T *src, UINT32_T size)
 
     flash_handle = ddev_open(FLASH_DEV_NAME, &status, 0);
 
-    //½â±£»¤
+    //ï¿½â±£ï¿½ï¿½
     protect_flag = __uni_flash_is_protect_all();
     flash_handle = ddev_open(FLASH_DEV_NAME, &status, 0);
     
@@ -180,7 +180,7 @@ OPERATE_RET tkl_flash_write(UINT32_T addr, CONST UCHAR_T *src, UINT32_T size)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-OPERATE_RET tkl_flash_erase(UINT32_T addr, UINT32_T size)
+OPERATE_RET tkl_flash_erase(uint32_t addr, uint32_t size)
 {
     // --- BEGIN: user implements ---
     unsigned short start_sec = (addr / PARTITION_SIZE);
@@ -197,7 +197,7 @@ OPERATE_RET tkl_flash_erase(UINT32_T addr, UINT32_T size)
 
     flash_handle = ddev_open(FLASH_DEV_NAME, &status, 0);
 
-    //½â±£»¤
+    //ï¿½â±£ï¿½ï¿½
     protect_flag = __uni_flash_is_protect_all();
     if (protect_flag) {
         param = FLASH_PROTECT_HALF;
@@ -235,7 +235,7 @@ OPERATE_RET tkl_flash_erase(UINT32_T addr, UINT32_T size)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-OPERATE_RET tkl_flash_lock(UINT32_T addr, UINT32_T size)
+OPERATE_RET tkl_flash_lock(uint32_t addr, uint32_t size)
 {
     // --- BEGIN: user implements ---
     return OPRT_NOT_SUPPORTED;
@@ -252,7 +252,7 @@ OPERATE_RET tkl_flash_lock(UINT32_T addr, UINT32_T size)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-OPERATE_RET tkl_flash_unlock(UINT32_T addr, UINT32_T size)
+OPERATE_RET tkl_flash_unlock(uint32_t addr, uint32_t size)
 {
     // --- BEGIN: user implements ---
     return OPRT_NOT_SUPPORTED;

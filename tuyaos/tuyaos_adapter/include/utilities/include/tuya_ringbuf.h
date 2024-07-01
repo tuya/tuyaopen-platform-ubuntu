@@ -98,7 +98,7 @@ UINT16_T tuya_ring_buff_peek(TUYA_RINGBUFF_T ringbuff, VOID_T *data, UINT16_T le
  * @param[in]   len:      write len
  * @return  length of the data write
  */
-UINT16_T tuya_ring_buff_write(TUYA_RINGBUFF_T ringbuff, CONST VOID_T *data, UINT16_T len);
+UINT16_T tuya_ring_buff_write(TUYA_RINGBUFF_T ringbuff, const VOID_T *data, UINT16_T len);
 
 
 #ifdef __cplusplus

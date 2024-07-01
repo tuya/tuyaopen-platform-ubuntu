@@ -272,13 +272,13 @@ static int InitSha512(wc_Sha512* sha512)
 
     #if defined(HAVE_INTEL_AVX1)
 
-       XMM Instructions/INLINE asm Definitions
+       XMM Instructions/inline asm Definitions
 
     #endif
 
     #if defined(HAVE_INTEL_AVX2)
 
-       YMM Instructions/INLINE asm Definitions
+       YMM Instructions/inline asm Definitions
 
     #endif
 

@@ -65,7 +65,7 @@ VOID_T *tkl_system_realloc(VOID_T* ptr, size_t size);
 *
 * @return heap size
 */
-INT_T tkl_system_get_free_heap_size(VOID_T);
+int32_t tkl_system_get_free_heap_size(VOID_T);
 
 #ifdef __cplusplus
 }

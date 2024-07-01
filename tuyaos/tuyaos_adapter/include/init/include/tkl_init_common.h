@@ -41,7 +41,7 @@ TKL_RTC_DESC_T* tkl_rtc_desc_get(VOID_T);
  * @brief the description of tuya kernel adapter layer watchdog
  */
 typedef struct {
-    UINT_T          (*init)                 (TUYA_WDOG_BASE_CFG_T *cfg);
+    uint32_t          (*init)                 (TUYA_WDOG_BASE_CFG_T *cfg);
     OPERATE_RET     (*deinit)               (VOID_T);
     OPERATE_RET     (*refresh)              (VOID_T);
 } TKL_WATCHDOG_DESC_T;
@@ -57,11 +57,11 @@ TKL_WATCHDOG_DESC_T* tkl_watchdog_desc_get(VOID_T);
  * @brief the description of tuya kernel adapter layer flash
  */
 typedef struct {
-    OPERATE_RET     (*read)                 (CONST UINT_T addr, UCHAR_T *dst, CONST UINT_T size);
-    OPERATE_RET     (*write)                (CONST UINT_T addr, CONST UCHAR_T *src, CONST UINT_T size);
-    OPERATE_RET     (*erase)                (CONST UINT_T addr, CONST UINT_T size);
-    OPERATE_RET     (*lock)                 (CONST UINT_T addr, CONST UINT_T size);
-    OPERATE_RET     (*unlock)               (CONST UINT_T addr, CONST UINT_T size);
+    OPERATE_RET     (*read)                 (const uint32_t addr, UCHAR_T *dst, const uint32_t size);
+    OPERATE_RET     (*write)                (const uint32_t addr, const UCHAR_T *src, const uint32_t size);
+    OPERATE_RET     (*erase)                (const uint32_t addr, const uint32_t size);
+    OPERATE_RET     (*lock)                 (const uint32_t addr, const uint32_t size);
+    OPERATE_RET     (*unlock)               (const uint32_t addr, const uint32_t size);
     OPERATE_RET     (*get_one_type_info)    (TUYA_FLASH_TYPE_E type, TUYA_FLASH_BASE_INFO_T* info);
 } TKL_FLASH_DESC_T;
 

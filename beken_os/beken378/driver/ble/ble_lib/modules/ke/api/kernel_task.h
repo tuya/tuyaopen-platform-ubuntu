@@ -34,7 +34,7 @@
 #include <stdbool.h>         // standard boolean
 
 #include "rwip_config.h"     // stack configuration
-#include "ble_compiler.h"        // compiler defines, INLINE
+#include "ble_compiler.h"        // compiler defines, inline
 #include "kernel_msg.h"          // kernel message defines
 
 /* Default Message handler code to handle several message type in same handler. */

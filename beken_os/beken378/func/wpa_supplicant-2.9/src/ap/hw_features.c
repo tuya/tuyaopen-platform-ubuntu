@@ -566,7 +566,7 @@ static int ieee80211n_supported_ht_capab(struct hostapd_iface *iface)
 	case HT_CAP_INFO_SMPS_STATIC:
 		if (!(iface->smps_modes & WPA_DRIVER_SMPS_MODE_STATIC)) {
 			wpa_printf(MSG_ERROR,
-				   "Driver does not support configured HT capability [SMPS-STATIC]");
+				   "Driver does not support configured HT capability [SMPS-static]");
 			return 0;
 		}
 		break;

@@ -2199,7 +2199,7 @@ cali_saradc_desc_t *bk7011_cal_saradc_open()
     }
 
     param = PWD_SARADC_CLK_BIT;
-    sddev_control(ICU_DEV_NAME, CMD_CLK_PWR_UP, &param);//REG_0x2£º00FFFD7C
+    sddev_control(ICU_DEV_NAME, CMD_CLK_PWR_UP, &param);//REG_0x2ï¿½ï¿½00FFFD7C
 
     param = BLK_BIT_SARADC;
     sddev_control(SCTRL_DEV_NAME, CMD_SCTRL_BLK_ENABLE, &param);
@@ -2238,7 +2238,7 @@ UINT32 bk7011_cal_saradc_runorstop(cali_saradc_desc_t *cali_saradc_ptr, UINT8 ru
     {
         return DRV_FAILURE;
     }
-    return ddev_control(cali_saradc_ptr->handle, SARADC_CMD_RUN_OR_STOP_ADC, (VOID *)&run_stop);
+    return ddev_control(cali_saradc_ptr->handle, SARADC_CMD_RUN_OR_STOP_ADC, (void *)&run_stop);
 }
 
 UINT32 bk7011_cal_saradc_read(cali_saradc_desc_t *cali_saradc_ptr)

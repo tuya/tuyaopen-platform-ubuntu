@@ -36,7 +36,7 @@ Release 4.1.0 of wolfSSL embedded TLS has bug fixes and new features including:
 * IAR-EWARM compiler warning fix
 * Clean up of user_settings for CS+ port
 * Updating Renesas example projects to the latest version
-* Micrium updates adjusting STATIC macro name and added inline flag
+* Micrium updates adjusting static macro name and added inline flag
 * Fixes for building with WOLFSSL_CUSTOM_CURVES on Windows
 * Updates and refactor to the default build settings with Arduino
 * Fixes for visibility tags with Cygwin build
@@ -205,7 +205,7 @@ Release 3.15.5 of wolfSSL embedded TLS has bug fixes and new features including:
 * Fixes for GCC-8 warnings with strings
 * Additional compatibility API’s added, including functions like wolfSSL_X509_CA_num and wolfSSL_PEM_read_X509_CRL
 * Fixes for OCSP use with NGINX port
-* Renamed the macro INLINE to WC_INLINE for inline functions
+* Renamed the macro inline to WC_INLINE for inline functions
 * Doxygen updates and formatting for documentation generation
 * Added support for the STM32L4 with AES/SHA hardware acceleration
 * Adds checking for critical extension with certificate Auth ID and the macro WOLFSSL_ALLOW_CRIT_SKID to override the check

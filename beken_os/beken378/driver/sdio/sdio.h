@@ -9,11 +9,11 @@
 #ifdef SDIO_DEBUG
 #define SDIO_PRT                 os_null_printf //os_printf
 #define SDIO_WPRT                warning_prf
-#define STATIC
+#define static
 #else
 #define SDIO_PRT                 os_null_printf
 #define SDIO_WPRT                os_null_printf
-#define STATIC                   static
+#define static                   static
 #endif
 
 #ifdef SDIO_DEBUG

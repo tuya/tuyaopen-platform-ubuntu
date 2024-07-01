@@ -70,7 +70,7 @@ SYS_TIME_T tkl_system_get_millisecond(VOID_T)
 *
 * @return random value
 */
-INT_T tkl_system_get_random(UINT_T range)
+int32_t tkl_system_get_random(uint32_t range)
 {
     // --- BEGIN: user implements ---
     unsigned int trange = range;
@@ -146,10 +146,10 @@ TUYA_RESET_REASON_E tkl_system_get_reset_reason(CHAR_T** describe)
 *
 * @return none
 */
-VOID_T tkl_system_sleep(UINT_T num_ms)
+VOID_T tkl_system_sleep(uint32_t num_ms)
 {
     // --- BEGIN: user implements ---
-    UINT_T ticks = num_ms / portTICK_RATE_MS;
+    uint32_t ticks = num_ms / portTICK_RATE_MS;
 
     if (ticks == 0) {
         ticks = 1;
@@ -166,9 +166,9 @@ VOID_T tkl_system_sleep(UINT_T num_ms)
 *
 * @note This API is used for system sleep.
 *
-* @return VOID
+* @return void
 */
-VOID_T tkl_system_delay(UINT_T num_ms)
+VOID_T tkl_system_delay(uint32_t num_ms)
 {
     // --- BEGIN: user implements ---
     return ;
@@ -185,7 +185,7 @@ VOID_T tkl_system_delay(UINT_T num_ms)
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
 
-OPERATE_RET tkl_system_get_cpu_info(TUYA_CPU_INFO_T **cpu_ary, INT_T *cpu_cnt)
+OPERATE_RET tkl_system_get_cpu_info(TUYA_CPU_INFO_T **cpu_ary, int32_t *cpu_cnt)
 {
     // --- BEGIN: user implements ---
     return OPRT_NOT_SUPPORTED;

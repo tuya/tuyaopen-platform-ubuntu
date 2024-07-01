@@ -21,7 +21,7 @@ extern void bk_printf(const char *fmt, ...);
 #define MAX_SIZE_OF_DEBUG_BUF (1024)
 #endif
 
-STATIC CHAR_T s_output_buf[MAX_SIZE_OF_DEBUG_BUF] = {0};
+static CHAR_T s_output_buf[MAX_SIZE_OF_DEBUG_BUF] = {0};
 #endif
 
 /**
@@ -33,7 +33,7 @@ STATIC CHAR_T s_output_buf[MAX_SIZE_OF_DEBUG_BUF] = {0};
 *
 * @return 
 */
-VOID_T tkl_log_output(CONST CHAR_T *format, ...)
+VOID_T tkl_log_output(const CHAR_T *format, ...)
 {
     // --- BEGIN: user implements ---
     if (format == NULL) {
@@ -56,7 +56,7 @@ VOID_T tkl_log_output(CONST CHAR_T *format, ...)
 /**
 * @brief Close log port
 *
-* @param VOID
+* @param void
 *
 * @note This API is used for closing log port.
 *
@@ -72,7 +72,7 @@ OPERATE_RET tkl_log_close(VOID_T)
 /**
 * @brief Open log port
 *
-* @param VOID
+* @param void
 *
 * @note This API is used for openning log port.
 *

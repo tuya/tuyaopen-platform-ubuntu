@@ -21,12 +21,12 @@
 UINT8 beken_tx_sdio_s = 1;
 UINT8 da_hd_err = 0;
 #endif
-STATIC SDIO_S sdio =
+static SDIO_S sdio =
 {
     0,
 };
 
-STATIC DD_OPERATIONS sdio_op =
+static DD_OPERATIONS sdio_op =
 {
     sdio_open,
     sdio_close,

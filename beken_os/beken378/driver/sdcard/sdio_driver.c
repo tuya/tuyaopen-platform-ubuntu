@@ -114,7 +114,7 @@ void sdio_register_reenable(void)
 }
 
 void sdio_sendcmd_function( UINT8 cmd_index, UINT32 flag,
-                            UINT32 timeout, VOID *arg )
+                            UINT32 timeout, void *arg )
 {
     UINT32 reg;
     flag &= CMD_FLAG_MASK;

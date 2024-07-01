@@ -41,7 +41,7 @@ OPERATE_RET tkl_ble_stack_gatt_link(USHORT_T *p_link);
  * @return  SUCCESS         Register successfully.
  *          ERROR
  * */
-OPERATE_RET tkl_ble_gap_callback_register(CONST TKL_BLE_GAP_EVT_FUNC_CB gap_evt);
+OPERATE_RET tkl_ble_gap_callback_register(const TKL_BLE_GAP_EVT_FUNC_CB gap_evt);
 
 /**
  * @brief   Register GATT Event Callback
@@ -49,7 +49,7 @@ OPERATE_RET tkl_ble_gap_callback_register(CONST TKL_BLE_GAP_EVT_FUNC_CB gap_evt)
  * @return  SUCCESS         Register successfully.
  *          ERROR
  * */
-OPERATE_RET tkl_ble_gatt_callback_register(CONST TKL_BLE_GATT_EVT_FUNC_CB gatt_evt);
+OPERATE_RET tkl_ble_gatt_callback_register(const TKL_BLE_GATT_EVT_FUNC_CB gatt_evt);
 
 /******************************************************************************************************************************/
 /** @brief Define All GAP Interface
@@ -62,7 +62,7 @@ OPERATE_RET tkl_ble_gatt_callback_register(CONST TKL_BLE_GATT_EVT_FUNC_CB gatt_e
  * @return  SUCCESS
  *          ERROR
  * */ 
-OPERATE_RET tkl_ble_gap_addr_set(TKL_BLE_GAP_ADDR_T CONST *p_peer_addr);
+OPERATE_RET tkl_ble_gap_addr_set(TKL_BLE_GAP_ADDR_T const *p_peer_addr);
  
 /**
  * @brief   Get the local Bluetooth identity address.
@@ -78,15 +78,15 @@ OPERATE_RET tkl_ble_gap_address_get(TKL_BLE_GAP_ADDR_T *p_peer_addr);
  * @return  SUCCESS
  *  ERROR
  * */ 
-OPERATE_RET tkl_ble_gap_adv_start(TKL_BLE_GAP_ADV_PARAMS_T CONST *p_adv_params);
+OPERATE_RET tkl_ble_gap_adv_start(TKL_BLE_GAP_ADV_PARAMS_T const *p_adv_params);
 
 /**
  * @brief   Stop advertising
- * @param   VOID
+ * @param   void
  * @return  SUCCESS
  *          ERROR
  * */ 
-OPERATE_RET tkl_ble_gap_adv_stop(VOID);
+OPERATE_RET tkl_ble_gap_adv_stop(void);
 
 /**
  * @brief   Setting advertising data
@@ -96,7 +96,7 @@ OPERATE_RET tkl_ble_gap_adv_stop(VOID);
  * @return  SUCCESS
  *          ERROR
  * */ 
-OPERATE_RET tkl_ble_gap_adv_rsp_data_set(TKL_BLE_DATA_T CONST *p_adv, TKL_BLE_DATA_T CONST *p_scan_rsp);
+OPERATE_RET tkl_ble_gap_adv_rsp_data_set(TKL_BLE_DATA_T const *p_adv, TKL_BLE_DATA_T const *p_scan_rsp);
 
 /**
  * @brief   Update advertising data
@@ -106,7 +106,7 @@ OPERATE_RET tkl_ble_gap_adv_rsp_data_set(TKL_BLE_DATA_T CONST *p_adv, TKL_BLE_DA
  * @return  SUCCESS
  *          ERROR
  * */ 
-OPERATE_RET tkl_ble_gap_adv_rsp_data_update(TKL_BLE_DATA_T CONST *p_adv, TKL_BLE_DATA_T CONST *p_scan_rsp);
+OPERATE_RET tkl_ble_gap_adv_rsp_data_update(TKL_BLE_DATA_T const *p_adv, TKL_BLE_DATA_T const *p_scan_rsp);
 
 /**
  * @brief   Start scanning
@@ -114,15 +114,15 @@ OPERATE_RET tkl_ble_gap_adv_rsp_data_update(TKL_BLE_DATA_T CONST *p_adv, TKL_BLE
  * @return  SUCCESS
  *          ERROR
  * */ 
-OPERATE_RET tkl_ble_gap_scan_start(TKL_BLE_GAP_SCAN_PARAMS_T CONST *p_scan_params);
+OPERATE_RET tkl_ble_gap_scan_start(TKL_BLE_GAP_SCAN_PARAMS_T const *p_scan_params);
 
 /**
  * @brief   Stop scanning
- * @param   VOID
+ * @param   void
  * @return  SUCCESS
  *          ERROR
  * */ 
-OPERATE_RET tkl_ble_gap_scan_stop(VOID);
+OPERATE_RET tkl_ble_gap_scan_stop(void);
 
 /**
  * @brief   Start connecting one peer
@@ -132,7 +132,7 @@ OPERATE_RET tkl_ble_gap_scan_stop(VOID);
  * @return  SUCCESS
  *          ERROR
  * */ 
-OPERATE_RET tkl_ble_gap_connect(TKL_BLE_GAP_ADDR_T CONST *p_peer_addr, TKL_BLE_GAP_SCAN_PARAMS_T CONST *p_scan_params, TKL_BLE_GAP_CONN_PARAMS_T CONST *p_conn_params);
+OPERATE_RET tkl_ble_gap_connect(TKL_BLE_GAP_ADDR_T const *p_peer_addr, TKL_BLE_GAP_SCAN_PARAMS_T const *p_scan_params, TKL_BLE_GAP_CONN_PARAMS_T const *p_conn_params);
 
 /**
  * @brief   Disconnect from peer
@@ -150,7 +150,7 @@ OPERATE_RET tkl_ble_gap_disconnect(USHORT_T conn_handle, UCHAR_T hci_reason);
  * @return  SUCCESS
  *          ERROR
  * */
-OPERATE_RET tkl_ble_gap_conn_param_update(USHORT_T conn_handle, TKL_BLE_GAP_CONN_PARAMS_T CONST *p_conn_params);
+OPERATE_RET tkl_ble_gap_conn_param_update(USHORT_T conn_handle, TKL_BLE_GAP_CONN_PARAMS_T const *p_conn_params);
 
 /**
  * @brief   Set the radio's transmit power.
@@ -160,7 +160,7 @@ OPERATE_RET tkl_ble_gap_conn_param_update(USHORT_T conn_handle, TKL_BLE_GAP_CONN
  * @return  SUCCESS
  *          ERROR
  * */ 
-OPERATE_RET tkl_ble_gap_tx_power_set(UCHAR_T role, INT_T tx_power);
+OPERATE_RET tkl_ble_gap_tx_power_set(UCHAR_T role, int32_t tx_power);
 
 /**
  * @brief   Get the received signal strength for the last connection event.

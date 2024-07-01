@@ -2162,7 +2162,7 @@ static void adc_command(char *pcWriteBuffer, int xWriteBufferLen, int argc, char
             return;
         }
         p_ADC_cal.val = p_ADC_drv_desc->pData[4];
-        if(SARADC_FAILURE == ddev_control(saradc_handle, SARADC_CMD_SET_CAL_VAL, (VOID *)&p_ADC_cal))
+        if(SARADC_FAILURE == ddev_control(saradc_handle, SARADC_CMD_SET_CAL_VAL, (void *)&p_ADC_cal))
         {
             os_printf("set calibrate value failture\r\n");
             os_free(p_ADC_drv_desc->pData);

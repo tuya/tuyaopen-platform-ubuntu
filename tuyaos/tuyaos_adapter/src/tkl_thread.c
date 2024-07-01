@@ -34,11 +34,11 @@
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
 OPERATE_RET tkl_thread_create(TKL_THREAD_HANDLE* thread,
-                              CONST CHAR_T* name,
-                              UINT_T stack_size,
-                              UINT_T priority,
-                              CONST THREAD_FUNC_T func,
-                              VOID_T* CONST arg)
+                              const CHAR_T* name,
+                              uint32_t stack_size,
+                              uint32_t priority,
+                              const THREAD_FUNC_T func,
+                              VOID_T* const arg)
 {
     // --- BEGIN: user implements ---
     if (!thread) {
@@ -64,7 +64,7 @@ OPERATE_RET tkl_thread_create(TKL_THREAD_HANDLE* thread,
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-OPERATE_RET tkl_thread_release(CONST TKL_THREAD_HANDLE thread)
+OPERATE_RET tkl_thread_release(const TKL_THREAD_HANDLE thread)
 {
     // --- BEGIN: user implements ---
     if (!thread) {
@@ -87,7 +87,7 @@ OPERATE_RET tkl_thread_release(CONST TKL_THREAD_HANDLE thread)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-OPERATE_RET tkl_thread_get_watermark(CONST TKL_THREAD_HANDLE thread, UINT_T* watermark)
+OPERATE_RET tkl_thread_get_watermark(const TKL_THREAD_HANDLE thread, uint32_t* watermark)
 {
     // --- BEGIN: user implements ---
     *watermark = uxTaskGetStackHighWaterMark(thread) * sizeof( StackType_t );
@@ -121,7 +121,7 @@ OPERATE_RET tkl_thread_get_id(TKL_THREAD_HANDLE *thread)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-OPERATE_RET tkl_thread_set_self_name(CONST CHAR_T* name)
+OPERATE_RET tkl_thread_set_self_name(const CHAR_T* name)
 {
     // --- BEGIN: user implements ---
     if (!name) {
@@ -170,7 +170,7 @@ OPERATE_RET tkl_thread_is_self(TKL_THREAD_HANDLE thread, BOOL_T* is_self)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-OPERATE_RET tkl_thread_get_priority(TKL_THREAD_HANDLE thread, INT_T *priority)
+OPERATE_RET tkl_thread_get_priority(TKL_THREAD_HANDLE thread, int32_t *priority)
 {
     // --- BEGIN: user implements ---
     return OPRT_NOT_SUPPORTED;
@@ -187,7 +187,7 @@ OPERATE_RET tkl_thread_get_priority(TKL_THREAD_HANDLE thread, INT_T *priority)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-OPERATE_RET tkl_thread_set_priority(TKL_THREAD_HANDLE thread, INT_T priority)
+OPERATE_RET tkl_thread_set_priority(TKL_THREAD_HANDLE thread, int32_t priority)
 {
     // --- BEGIN: user implements ---
     return OPRT_NOT_SUPPORTED;

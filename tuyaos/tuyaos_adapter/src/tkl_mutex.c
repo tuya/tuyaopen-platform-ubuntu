@@ -55,7 +55,7 @@ OPERATE_RET tkl_mutex_create_init(TKL_MUTEX_HANDLE *handle)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-OPERATE_RET tkl_mutex_lock(CONST TKL_MUTEX_HANDLE handle)
+OPERATE_RET tkl_mutex_lock(const TKL_MUTEX_HANDLE handle)
 {
     // --- BEGIN: user implements ---
     if(!handle) {
@@ -85,7 +85,7 @@ OPERATE_RET tkl_mutex_lock(CONST TKL_MUTEX_HANDLE handle)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-OPERATE_RET tkl_mutex_trylock(CONST TKL_MUTEX_HANDLE mutexHandle)
+OPERATE_RET tkl_mutex_trylock(const TKL_MUTEX_HANDLE mutexHandle)
 {
     // --- BEGIN: user implements ---
     return OPRT_OK;
@@ -101,7 +101,7 @@ OPERATE_RET tkl_mutex_trylock(CONST TKL_MUTEX_HANDLE mutexHandle)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-OPERATE_RET tkl_mutex_unlock(CONST TKL_MUTEX_HANDLE handle)
+OPERATE_RET tkl_mutex_unlock(const TKL_MUTEX_HANDLE handle)
 {
     // --- BEGIN: user implements ---
     BaseType_t ret;
@@ -115,7 +115,7 @@ OPERATE_RET tkl_mutex_unlock(CONST TKL_MUTEX_HANDLE handle)
 #else
     ret = xSemaphoreGive(handle);
 #endif
-    // »¥³âÁ¿²»ÄÜÓÃÓÚÖÐ¶Ï
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½
     // 
     // extern uint32_t bk_wlan_get_INT_status(void);
     // if (0 == bk_wlan_get_INT_status()) {
@@ -142,7 +142,7 @@ OPERATE_RET tkl_mutex_unlock(CONST TKL_MUTEX_HANDLE handle)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-OPERATE_RET tkl_mutex_release(CONST TKL_MUTEX_HANDLE handle)
+OPERATE_RET tkl_mutex_release(const TKL_MUTEX_HANDLE handle)
 {
     // --- BEGIN: user implements ---
     if(!handle) {

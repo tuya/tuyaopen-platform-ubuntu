@@ -24,7 +24,7 @@
  *
  * @return 0, init error; >0 : the actually watchdog interval 
  */
-UINT32_T tkl_watchdog_init(TUYA_WDOG_BASE_CFG_T *cfg)
+uint32_t tkl_watchdog_init(TUYA_WDOG_BASE_CFG_T *cfg)
 {
     // --- BEGIN: user implements ---
     if (cfg->interval_ms > 60000) {

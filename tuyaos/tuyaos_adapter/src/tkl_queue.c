@@ -32,7 +32,7 @@ typedef struct {
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_queue_create_init(TKL_QUEUE_HANDLE *queue, INT_T msgsize, INT_T msgcount)
+OPERATE_RET tkl_queue_create_init(TKL_QUEUE_HANDLE *queue, int32_t msgsize, int32_t msgcount)
 {
     // --- BEGIN: user implements ---
     if (!queue) {
@@ -59,7 +59,7 @@ OPERATE_RET tkl_queue_create_init(TKL_QUEUE_HANDLE *queue, INT_T msgsize, INT_T 
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_queue_post(CONST TKL_QUEUE_HANDLE queue, VOID_T *data, UINT_T timeout)
+OPERATE_RET tkl_queue_post(const TKL_QUEUE_HANDLE queue, VOID_T *data, uint32_t timeout)
 {
     // --- BEGIN: user implements ---
     int ret = pdPASS;
@@ -73,7 +73,7 @@ OPERATE_RET tkl_queue_post(CONST TKL_QUEUE_HANDLE queue, VOID_T *data, UINT_T ti
         if (timeout == TKL_QUEUE_WAIT_FROEVER) {
             ret = xQueueSend(queue, data, portMAX_DELAY);
         } else {
-            UINT_T ticks = timeout / portTICK_RATE_MS;
+            uint32_t ticks = timeout / portTICK_RATE_MS;
 
             if (ticks == 0) {
                 ticks = 1;
@@ -103,7 +103,7 @@ OPERATE_RET tkl_queue_post(CONST TKL_QUEUE_HANDLE queue, VOID_T *data, UINT_T ti
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_queue_fetch(CONST TKL_QUEUE_HANDLE queue, VOID_T *msg, UINT_T timeout)
+OPERATE_RET tkl_queue_fetch(const TKL_QUEUE_HANDLE queue, VOID_T *msg, uint32_t timeout)
 {
     // --- BEGIN: user implements ---
     void *dummyptr;
@@ -120,7 +120,7 @@ OPERATE_RET tkl_queue_fetch(CONST TKL_QUEUE_HANDLE queue, VOID_T *msg, UINT_T ti
     if (timeout == TKL_QUEUE_WAIT_FROEVER) {
         ret = xQueueReceive(queue, msg, portMAX_DELAY);
     } else {
-        UINT_T ticks = timeout / portTICK_RATE_MS;
+        uint32_t ticks = timeout / portTICK_RATE_MS;
 
         if (ticks == 0) {
             ticks = 1;
@@ -143,7 +143,7 @@ OPERATE_RET tkl_queue_fetch(CONST TKL_QUEUE_HANDLE queue, VOID_T *msg, UINT_T ti
  *
  * @return VOID_T
  */
-VOID_T tkl_queue_free(CONST TKL_QUEUE_HANDLE queue)
+VOID_T tkl_queue_free(const TKL_QUEUE_HANDLE queue)
 {
     // --- BEGIN: user implements ---
     if (!queue) {

@@ -93,7 +93,7 @@ OPERATE_RET tkl_timer_init(TUYA_TIMER_NUM_E timer_id, TUYA_TIMER_BASE_CFG_T *cfg
     if(cfg == NULL){
         return OPRT_INVALID_PARM;
     }
-    if ((2 == timer_id) || (3 == timer_id)) {//bk timer2、3 被系统占用了实际 bk timerID 为 timer4~timer5
+    if ((2 == timer_id) || (3 == timer_id)) {//bk timer2锟斤拷3 锟斤拷系统占锟斤拷锟斤拷实锟斤拷 bk timerID 为 timer4~timer5
         timer_id +=2;
     }
     timer_map[timer_id].mode = cfg->mode;
@@ -111,7 +111,7 @@ OPERATE_RET tkl_timer_init(TUYA_TIMER_NUM_E timer_id, TUYA_TIMER_BASE_CFG_T *cfg
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_timer_start(TUYA_TIMER_NUM_E timer_id, UINT_T us)
+OPERATE_RET tkl_timer_start(TUYA_TIMER_NUM_E timer_id, uint32_t us)
 {
     // --- BEGIN: user implements ---
     if (timer_id >= TIMER_DEV_NUM) {
@@ -125,7 +125,7 @@ OPERATE_RET tkl_timer_start(TUYA_TIMER_NUM_E timer_id, UINT_T us)
             /* tuya timer2~timer3 can't not set cycle less than 1ms */
             return OPRT_INVALID_PARM;
         }
-        bk_timer_initialize((timer_id + 2), us / 1000, __tkl_hw_timer_cb); //bk timer2、3 被系统占用了实际 bk timerID 为 timer4~timer5
+        bk_timer_initialize((timer_id + 2), us / 1000, __tkl_hw_timer_cb); //bk timer2锟斤拷3 锟斤拷系统占锟斤拷锟斤拷实锟斤拷 bk timerID 为 timer4~timer5
         return OPRT_OK;
     }
 
@@ -150,7 +150,7 @@ OPERATE_RET tkl_timer_stop(TUYA_TIMER_NUM_E timer_id)
     if ((0 == timer_id) || (1 == timer_id)) {
         bk_timer_stop(timer_id);
     } else {
-        bk_timer_stop(timer_id + 2); //bk timer2、3 被系统占用了实际 bk timerID 为 timer4~timer5
+        bk_timer_stop(timer_id + 2); //bk timer2锟斤拷3 锟斤拷系统占锟斤拷锟斤拷实锟斤拷 bk timerID 为 timer4~timer5
         return OPRT_OK;
     }
 
@@ -180,7 +180,7 @@ OPERATE_RET tkl_timer_deinit(TUYA_TIMER_NUM_E timer_id)
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_timer_get_current_value(TUYA_TIMER_NUM_E timer_id, UINT_T *us)
+OPERATE_RET tkl_timer_get_current_value(TUYA_TIMER_NUM_E timer_id, uint32_t *us)
 {
     // --- BEGIN: user implements ---
     return OPRT_NOT_SUPPORTED;
@@ -195,7 +195,7 @@ OPERATE_RET tkl_timer_get_current_value(TUYA_TIMER_NUM_E timer_id, UINT_T *us)
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_timer_get(TUYA_TIMER_NUM_E timer_id, UINT_T *us)
+OPERATE_RET tkl_timer_get(TUYA_TIMER_NUM_E timer_id, uint32_t *us)
 {
     // --- BEGIN: user implements ---
     uint32_t count;

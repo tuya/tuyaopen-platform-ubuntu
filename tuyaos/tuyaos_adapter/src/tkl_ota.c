@@ -69,7 +69,7 @@ extern int tkl_flash_set_protect(const BOOL_T enable);
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-OPERATE_RET tkl_ota_get_ability(UINT_T *image_size, TUYA_OTA_TYPE_E *type)
+OPERATE_RET tkl_ota_get_ability(uint32_t *image_size, TUYA_OTA_TYPE_E *type)
 {
     // --- BEGIN: user implements ---
     *image_size = OTA_MAX_BIN_SIZE;
@@ -90,7 +90,7 @@ OPERATE_RET tkl_ota_get_ability(UINT_T *image_size, TUYA_OTA_TYPE_E *type)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-OPERATE_RET tkl_ota_start_notify(UINT_T image_size, TUYA_OTA_TYPE_E type, TUYA_OTA_PATH_E path)
+OPERATE_RET tkl_ota_start_notify(uint32_t image_size, TUYA_OTA_TYPE_E type, TUYA_OTA_PATH_E path)
 {
     // --- BEGIN: user implements ---
     if(image_size == 0) {
@@ -121,7 +121,7 @@ OPERATE_RET tkl_ota_start_notify(UINT_T image_size, TUYA_OTA_TYPE_E type, TUYA_O
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-OPERATE_RET tkl_ota_data_process(TUYA_OTA_DATA_T *pack, UINT_T* remain_len)
+OPERATE_RET tkl_ota_data_process(TUYA_OTA_DATA_T *pack, uint32_t* remain_len)
 {
     // --- BEGIN: user implements ---
     unsigned int sum_tmp = 0, i = 0;
@@ -163,7 +163,7 @@ OPERATE_RET tkl_ota_data_process(TUYA_OTA_DATA_T *pack, UINT_T* remain_len)
                 return OPRT_OS_ADAPTER_OTA_START_INFORM_FAILED;
             }
             
-            if(ug_proc->file_header.bin_len >= OTA_MAX_BIN_SIZE) { //ugÎÄ¼þ×î´óÎª664K
+            if(ug_proc->file_header.bin_len >= OTA_MAX_BIN_SIZE) { //ugï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Îª664K
                 memset(&ug_proc->file_header, 0, sizeof(UPDATE_FILE_HDR_S));
                 tkl_log_output("bin_file too large.... %d\r\n", ug_proc->file_header.bin_len);
                 return OPRT_OS_ADAPTER_OTA_PKT_SIZE_FAILED;
@@ -338,7 +338,7 @@ OPERATE_RET tkl_ota_end_notify(BOOL_T reset)
     tkl_flash_erase(ug_proc->start_addr, BUF_SIZE);
     tkl_flash_set_protect(TRUE);
 
-    memcpy(pTempbuf, frist_block_databuf, RT_IMG_WR_UNIT); // »¹Ô­Í·²¿ÐÅÏ¢µÄ512byte
+    memcpy(pTempbuf, frist_block_databuf, RT_IMG_WR_UNIT); // ï¿½ï¿½Ô­Í·ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½512byte
     tkl_flash_set_protect(FALSE);
     tkl_flash_write(ug_proc->start_addr, pTempbuf, BUF_SIZE);
     tkl_flash_set_protect(TRUE);

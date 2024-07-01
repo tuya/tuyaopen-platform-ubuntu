@@ -169,7 +169,7 @@
     #endif
 
     #if defined(HAVE_FIPS) || defined(HAVE_SELFTEST)
-        #define INLINE WC_INLINE
+        #define inline WC_INLINE
     #endif
 
 

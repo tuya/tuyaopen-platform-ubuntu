@@ -185,7 +185,7 @@ void sdio_gpio_config(void);
 void sdio_clk_config(UINT8 enable);
 void sdio_register_reset(void);
 void sdio_sendcmd_function( UINT8 cmd_index, UINT32 flag,
-                            UINT32 timeout, VOID *arg );
+                            UINT32 timeout, void *arg );
 SDIO_Error sdio_wait_cmd_response(UINT32 cmd);
 void sdio_get_cmdresponse_argument(UINT8 num, UINT32 *resp);
 void sdio_setup_data(UINT32 data_dir, UINT32 byte_len);

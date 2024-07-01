@@ -31,7 +31,7 @@
 #include "mbedtls/error.h"
 #include "mbedtls/oid.h"
 
-extern int __tuya_tls_random(VOID *p_rng, unsigned char *output, size_t output_len);
+extern int __tuya_tls_random(void *p_rng, unsigned char *output, size_t output_len);
 extern int mbedtls_pk_write_key_der( const mbedtls_pk_context *ctx, unsigned char *buf, size_t size );
 extern int mbedtls_pk_write_pubkey( unsigned char **p, unsigned char *start,
                      const mbedtls_pk_context *key );

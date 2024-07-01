@@ -59,7 +59,7 @@ OPERATE_RET tkl_ethernetif_output(TKL_NETIF_HANDLE netif, TKL_PBUF_HANDLE p)
 	err_t err = ERR_OK;
     struct pbuf *p_buf = (struct pbuf *)p;
     struct netif *p_netif = (struct netif *)netif;
-    UINT8_T vif_idx = rwm_mgmt_get_netif2vif(p_netif);
+    uint8_t vif_idx = rwm_mgmt_get_netif2vif(p_netif);
     extern int bmsg_tx_sender(struct pbuf *p, uint32_t vif_idx);
 
 	if (vif_idx >= NX_VIRT_DEV_MAX)
@@ -88,7 +88,7 @@ OPERATE_RET tkl_ethernetif_output(TKL_NETIF_HANDLE netif, TKL_PBUF_HANDLE p)
 OPERATE_RET tkl_ethernetif_recv(TKL_NETIF_HANDLE netif, TKL_PBUF_HANDLE p)
 {
     // --- BEGIN: user implements ---
-    UINT8_T vif_idx = 0;
+    uint8_t vif_idx = 0;
     struct eth_hdr *ethhdr;
     struct pbuf *p_buf = (struct pbuf *)p;
     struct netif *p_netif = (struct netif *)netif;

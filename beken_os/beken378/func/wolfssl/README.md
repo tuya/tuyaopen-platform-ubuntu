@@ -111,7 +111,7 @@ Release 4.1.0 of wolfSSL embedded TLS has bug fixes and new features including:
 * IAR-EWARM compiler warning fix
 * Clean up of user_settings for CS+ port
 * Updating Renesas example projects to the latest version
-* Micrium updates adjusting STATIC macro name and added inline flag
+* Micrium updates adjusting static macro name and added inline flag
 * Fixes for building with WOLFSSL_CUSTOM_CURVES on Windows
 * Updates and refactor to the default build settings with Arduino
 * Fixes for visibility tags with Cygwin build

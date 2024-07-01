@@ -19,13 +19,13 @@
 #include "spi_pub.h"
 
 static TKL_MUTEX_HANDLE spi_mutex = NULL;
-static bool cs_auto_flag = true;            //ÊÇ·ñÓÉÊÊÅä²ã×Ô¶¯¿ØÖÆcs, falseÓÉÉÏ²ã×Ô¼º¿ØÖÆ
-static bool spic_flag = false;              //ÌØÊâÄ£Ê½£¬»Ã²ÊµÆ´øÇı¶¯ÏÂĞèÖÃÒ»£¬¿ÉÁ¬Ğø·¢ËÍ´óÓÚ4KÒÔÉÏÊı¾İ
+static bool cs_auto_flag = true;            //ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½cs, falseï¿½ï¿½ï¿½Ï²ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½
+static bool spic_flag = false;              //ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½Ã²ÊµÆ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í´ï¿½ï¿½ï¿½4Kï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 #define SPI_CS_PIN TUYA_GPIO_NUM_15
 
 
 /**
-* @Èç¹ûĞèÒªÁ¬Ğø·¢ËÍ4KÒÔÉÏÊı¾İ£¨²»·Ö°ü£©£¬±ØĞëµ÷ÓÃÕâ¸ö½Ó¿Ú
+* @ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½4Kï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İ£ï¿½ï¿½ï¿½ï¿½Ö°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¿ï¿½
 */
 void tkl_spi_set_spic_flag(void)
 {
@@ -96,7 +96,7 @@ void tkl_spi_master_test(void);
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_spi_init(TUYA_SPI_NUM_E port, CONST TUYA_SPI_BASE_CFG_T *cfg)
+OPERATE_RET tkl_spi_init(TUYA_SPI_NUM_E port, const TUYA_SPI_BASE_CFG_T *cfg)
 {
     // --- BEGIN: user implements ---
     if(cfg->role == TUYA_SPI_ROLE_MASTER) {
@@ -104,7 +104,7 @@ OPERATE_RET tkl_spi_init(TUYA_SPI_NUM_E port, CONST TUYA_SPI_BASE_CFG_T *cfg)
         mode |= (cfg->mode & 0x1) << 2;
         mode |= (cfg->mode & 0x2) << 1;
         bk_spi_master_dma_init(mode, cfg->freq_hz, spic_flag);
-        // Èôcs_pin Îª15ºÅ½Å£¬pin½Å³õÊ¼»¯ĞèÔÚspi³õÊ¼»¯Ö®ºó£¬·ñÔò¸Ã¹Ü½ÅÎŞ·¨¿ØÖÆ
+        // ï¿½ï¿½cs_pin Îª15ï¿½Å½Å£ï¿½pinï¿½Å³ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½spiï¿½ï¿½Ê¼ï¿½ï¿½Ö®ï¿½ó£¬·ï¿½ï¿½ï¿½Ã¹Ü½ï¿½ï¿½Ş·ï¿½ï¿½ï¿½ï¿½ï¿½
         cs_auto_flag = (cfg->type == TUYA_SPI_AUTO_TYPE) ? true : false;
         if(cs_auto_flag) {
             TUYA_GPIO_BASE_CFG_T gpio_cfg = {
@@ -208,7 +208,7 @@ OPERATE_RET tkl_spi_recv(TUYA_SPI_NUM_E port, VOID_T *data, UINT16_T size)
  * 
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_spi_transfer(TUYA_SPI_NUM_E port, VOID_T* send_buf, VOID_T* receive_buf, UINT32_T length)
+OPERATE_RET tkl_spi_transfer(TUYA_SPI_NUM_E port, VOID_T* send_buf, VOID_T* receive_buf, uint32_t length)
 {
     // --- BEGIN: user implements ---
     tkl_mutex_lock(spi_mutex);
@@ -309,7 +309,7 @@ OPERATE_RET tkl_spi_irq_disable(TUYA_SPI_NUM_E port)
  * @return >=0,number of currently transferred data items. <0,err. 
  * during  tkl_spi_send, tkl_spi_recv and tkl_spi_transfer operation.
  */
-INT32_T tkl_spi_get_data_count(TUYA_SPI_NUM_E port)
+int32_t tkl_spi_get_data_count(TUYA_SPI_NUM_E port)
 {
     // --- BEGIN: user implements ---
     return 0;
@@ -323,7 +323,7 @@ INT32_T tkl_spi_get_data_count(TUYA_SPI_NUM_E port)
  * @param[in]       args    args associated with the command
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_spi_ioctl(TUYA_SPI_NUM_E port, UINT32_T cmd,  VOID *args)
+OPERATE_RET tkl_spi_ioctl(TUYA_SPI_NUM_E port, uint32_t cmd,  void *args)
 {
     // --- BEGIN: user implements ---
     return OPRT_NOT_SUPPORTED;

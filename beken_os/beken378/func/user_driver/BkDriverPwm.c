@@ -376,7 +376,7 @@ UINT32 bk_pwm_get_capvalue(bk_pwm_t pwm)
 	
     pwm_cap.ucChannel = pwm;
 	
-    ret = sddev_control(PWM_DEV_NAME, CMD_PWM_CAP_GET, (VOID *)&pwm_cap);
+    ret = sddev_control(PWM_DEV_NAME, CMD_PWM_CAP_GET, (void *)&pwm_cap);
     ASSERT(PWM_SUCCESS == ret);
 
     return pwm_cap.value;

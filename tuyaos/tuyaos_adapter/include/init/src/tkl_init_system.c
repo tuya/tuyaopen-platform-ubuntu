@@ -10,7 +10,7 @@
 
 #include "tkl_init_system.h"
 
-CONST TKL_OS_T TKL_OS  = {
+const TKL_OS_T TKL_OS  = {
     //! system
     .reset                  = tkl_system_reset,
     .get_free_heap_size     = tkl_system_get_free_heap_size,
@@ -61,7 +61,7 @@ CONST TKL_OS_T TKL_OS  = {
     .queue_fetch            = tkl_queue_fetch,
 };
 
-CONST TKL_FS_T TKL_FS = {
+const TKL_FS_T TKL_FS = {
     .fs_mkdir               = tkl_fs_mkdir,
     .fs_remove              = tkl_fs_remove,
     .fs_mode                = tkl_fs_mode,

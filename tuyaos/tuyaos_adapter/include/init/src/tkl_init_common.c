@@ -11,7 +11,7 @@
 #include "tkl_init_common.h"
 
 #define TKL_DESC_DEF(__type, __name, ...)           \
-    CONST __type  c_##__name = {                    \
+    const __type  c_##__name = {                    \
         __VA_ARGS__                                 \
     };                                              \
     __type* tkl_##__name##_get(VOID_T) {            \

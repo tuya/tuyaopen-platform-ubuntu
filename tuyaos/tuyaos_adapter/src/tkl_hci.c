@@ -17,16 +17,16 @@
 #if !CFG_USE_BK_HOST
 extern void ble_entry(void);
 
-STATIC BOOL_T m_tkl_hci_is_init = FALSE;
+static BOOL_T m_tkl_hci_is_init = FALSE;
 // --- END: user defines and implements ---
 
 /**
  * @brief   Function for initializing the bluetooth host-controller interface
- * @param   VOID
+ * @param   void
  * @return  SUCCESS             Initialized successfully.
  *          ERROR
  * */
-OPERATE_RET tkl_hci_init(VOID)
+OPERATE_RET tkl_hci_init(void)
 {
     // --- BEGIN: user implements ---
     if(m_tkl_hci_is_init){
@@ -42,11 +42,11 @@ OPERATE_RET tkl_hci_init(VOID)
 
 /**
  * @brief   Function for de-initializing the bluetooth host-controller interface
- * @param   VOID
+ * @param   void
  * @return  SUCCESS             De-initialized successfully.
  *          ERROR
  * */
-OPERATE_RET tkl_hci_deinit(VOID)
+OPERATE_RET tkl_hci_deinit(void)
 {
     // --- BEGIN: user implements ---
     bk_printf("\r\ntkl_hci_deinit\r\n");
@@ -57,13 +57,13 @@ OPERATE_RET tkl_hci_deinit(VOID)
 /**
  * @brief   [Linux/Android] Function for reseting the bluetooth host-controller interface
  *          Try to recover socket or reopen uart/usb interface.
- * @param   VOID
+ * @param   void
  * @return  SUCCESS             Reset successfully.
  *          ERROR
  * @note    [Special Interface] If running in RTOS, we may not support this feature. 
  *          And you can report OPRT_NOT_SUPPORT if you dont need it.
  * */
-OPERATE_RET tkl_hci_reset(VOID)
+OPERATE_RET tkl_hci_reset(void)
 {
     // --- BEGIN: user implements ---
     bk_printf("\r\ntkl_hci_reset\r\n");
@@ -89,7 +89,7 @@ OPERATE_RET tkl_hci_reset(VOID)
  *          OpCode(OCF+OGF) + Parameter Total Length + Parameter 0 ... + Parameter N
  * @Note    The OpCode Group Field (OGF), OpCode Command Field (OCF). 
  * */
-OPERATE_RET tkl_hci_cmd_packet_send(CONST UCHAR_T *p_buf, USHORT_T buf_len)
+OPERATE_RET tkl_hci_cmd_packet_send(const UCHAR_T *p_buf, USHORT_T buf_len)
 {
     // --- BEGIN: user implements ---
     return hci_driver_send(HCI_CMD_MSG_TYPE, buf_len, (UCHAR_T *)p_buf);
@@ -115,7 +115,7 @@ OPERATE_RET tkl_hci_cmd_packet_send(CONST UCHAR_T *p_buf, USHORT_T buf_len)
  *          (Connection Handle + PB Flag(12-14bit) + PC Flag(14-16bit)) + Data Total Length + Data
  * @Note    PB Flag: Packet_Boundary_Flag; PB Flag: Broadcast_Flag;
  * */
-OPERATE_RET tkl_hci_acl_packet_send(CONST UCHAR_T *p_buf, USHORT_T buf_len)
+OPERATE_RET tkl_hci_acl_packet_send(const UCHAR_T *p_buf, USHORT_T buf_len)
 {
     // --- BEGIN: user implements ---
     return hci_driver_send(HCI_ACL_MSG_TYPE, buf_len, (UCHAR_T *)p_buf);
@@ -142,7 +142,7 @@ OPERATE_RET tkl_hci_acl_packet_send(CONST UCHAR_T *p_buf, USHORT_T buf_len)
                1 byte        1 byte                1 byte                       N bytes
  *          Event Code + Parameter Total Length+ Event Parameter 0 + ... + Event Parameter N
  * */
-OPERATE_RET tkl_hci_callback_register(CONST TKL_HCI_FUNC_CB hci_evt_cb, CONST TKL_HCI_FUNC_CB acl_pkt_cb)
+OPERATE_RET tkl_hci_callback_register(const TKL_HCI_FUNC_CB hci_evt_cb, const TKL_HCI_FUNC_CB acl_pkt_cb)
 {
     // --- BEGIN: user implements ---
     bk_printf("\r\ntkl_hci_callback_register\r\n");

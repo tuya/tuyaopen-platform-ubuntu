@@ -25,7 +25,7 @@ extern "C" {
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_spi_init(TUYA_SPI_NUM_E port, CONST TUYA_SPI_BASE_CFG_T *cfg);
+OPERATE_RET tkl_spi_init(TUYA_SPI_NUM_E port, const TUYA_SPI_BASE_CFG_T *cfg);
 
 /**
  * @brief spi deinit
@@ -68,7 +68,7 @@ OPERATE_RET tkl_spi_recv(TUYA_SPI_NUM_E port, VOID_T *data, UINT16_T size);
  * 
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_spi_transfer(TUYA_SPI_NUM_E port, VOID_T* send_buf, VOID_T* receive_buf, UINT32_T length);
+OPERATE_RET tkl_spi_transfer(TUYA_SPI_NUM_E port, VOID_T* send_buf, VOID_T* receive_buf, uint32_t length);
 
 /**
  * @brief adort spi transfer,or spi send, or spi recv
@@ -126,7 +126,7 @@ OPERATE_RET tkl_spi_irq_disable(TUYA_SPI_NUM_E port);
  * @return >=0,number of currently transferred data items. <0,err. 
  * during  tkl_spi_send, tkl_spi_recv and tkl_spi_transfer operation.
  */
-INT32_T tkl_spi_get_data_count(TUYA_SPI_NUM_E port);
+int32_t tkl_spi_get_data_count(TUYA_SPI_NUM_E port);
 
 /**
  * @brief spi ioctl
@@ -135,7 +135,7 @@ INT32_T tkl_spi_get_data_count(TUYA_SPI_NUM_E port);
  * @param[in]       args    args associated with the command
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_spi_ioctl(TUYA_SPI_NUM_E port, UINT32_T cmd,  VOID *args);
+OPERATE_RET tkl_spi_ioctl(TUYA_SPI_NUM_E port, uint32_t cmd,  void *args);
 
 
 #ifdef __cplusplus

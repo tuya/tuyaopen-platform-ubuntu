@@ -33,7 +33,7 @@ static unsigned char pwm_start_flag[PWM_DEV_NUM] = {0};
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_pwm_init(TUYA_PWM_NUM_E ch_id, CONST TUYA_PWM_BASE_CFG_T *cfg)
+OPERATE_RET tkl_pwm_init(TUYA_PWM_NUM_E ch_id, const TUYA_PWM_BASE_CFG_T *cfg)
 {
     // --- BEGIN: user implements ---
     if (ch_id > PWM_DEV_NUM)
@@ -82,8 +82,8 @@ OPERATE_RET tkl_pwm_start(TUYA_PWM_NUM_E ch_id)
         return OPRT_INVALID_PARM;
     }
 
-    count = (unsigned int)((26 * 1000000) / pwm_cfg[ch_id].frequency);  // 26M(主频) / 频率 = 计数值
-    duty = (unsigned int)(pwm_cfg[ch_id].duty * count / 10000);         // 一个周期的计数值 * 占空比
+    count = (unsigned int)((26 * 1000000) / pwm_cfg[ch_id].frequency);  // 26M(锟斤拷频) / 频锟斤拷 = 锟斤拷锟斤拷值
+    duty = (unsigned int)(pwm_cfg[ch_id].duty * count / 10000);         // 一锟斤拷锟斤拷锟节的硷拷锟斤拷值 * 占锟秸憋拷
     if (0 == pwm_start_flag[ch_id]) {
         ret = bk_pwm_initialize(ch_id, count, duty, 0, 0);
         if (kNoErr == ret) {
@@ -129,7 +129,7 @@ OPERATE_RET tkl_pwm_stop(TUYA_PWM_NUM_E ch_id)
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_pwm_multichannel_start(TUYA_PWM_NUM_E *ch_id, UINT8_T num)
+OPERATE_RET tkl_pwm_multichannel_start(TUYA_PWM_NUM_E *ch_id, uint8_t num)
 {
     // --- BEGIN: user implements ---
     int ret = OPRT_OK;
@@ -147,9 +147,9 @@ OPERATE_RET tkl_pwm_multichannel_start(TUYA_PWM_NUM_E *ch_id, UINT8_T num)
             return OPRT_COM_ERROR;
         }
         
-        count = (unsigned int)((26 * 1000000) / pwm_cfg[ch_id[0]].frequency);       // 26M(主频) / 频率 = 计数值
-        cold_duty = (unsigned int)(pwm_cfg[ch_id[0]].duty * count / 10000);         // 一个周期的计数值 * 占空比
-        warm_duty = (unsigned int)(pwm_cfg[ch_id[1]].duty * count / 10000);         // 一个周期的计数值 * 占空比
+        count = (unsigned int)((26 * 1000000) / pwm_cfg[ch_id[0]].frequency);       // 26M(锟斤拷频) / 频锟斤拷 = 锟斤拷锟斤拷值
+        cold_duty = (unsigned int)(pwm_cfg[ch_id[0]].duty * count / 10000);         // 一锟斤拷锟斤拷锟节的硷拷锟斤拷值 * 占锟秸憋拷
+        warm_duty = (unsigned int)(pwm_cfg[ch_id[1]].duty * count / 10000);         // 一锟斤拷锟斤拷锟节的硷拷锟斤拷值 * 占锟秸憋拷
         if (count >= cold_duty + warm_duty) {
             dead = (count - cold_duty - warm_duty) / 2;
         } else {
@@ -186,7 +186,7 @@ OPERATE_RET tkl_pwm_multichannel_start(TUYA_PWM_NUM_E *ch_id, UINT8_T num)
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_pwm_multichannel_stop(TUYA_PWM_NUM_E *ch_id, UINT8_T num)
+OPERATE_RET tkl_pwm_multichannel_stop(TUYA_PWM_NUM_E *ch_id, uint8_t num)
 {
     // --- BEGIN: user implements ---
     if (2 == num) {
@@ -214,7 +214,7 @@ OPERATE_RET tkl_pwm_multichannel_stop(TUYA_PWM_NUM_E *ch_id, UINT8_T num)
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_pwm_duty_set(TUYA_PWM_NUM_E ch_id, UINT32_T duty)
+OPERATE_RET tkl_pwm_duty_set(TUYA_PWM_NUM_E ch_id, uint32_t duty)
 {
     // --- BEGIN: user implements ---
     if (ch_id > PWM_DEV_NUM)
@@ -236,7 +236,7 @@ OPERATE_RET tkl_pwm_duty_set(TUYA_PWM_NUM_E ch_id, UINT32_T duty)
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_pwm_frequency_set(TUYA_PWM_NUM_E ch_id, UINT32_T frequency)
+OPERATE_RET tkl_pwm_frequency_set(TUYA_PWM_NUM_E ch_id, uint32_t frequency)
 {
     // --- BEGIN: user implements ---
     if (ch_id > PWM_DEV_NUM)
@@ -273,7 +273,7 @@ OPERATE_RET tkl_pwm_polarity_set(TUYA_PWM_NUM_E ch_id, TUYA_PWM_POLARITY_E polar
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_pwm_info_set(TUYA_PWM_NUM_E ch_id, CONST TUYA_PWM_BASE_CFG_T *info)
+OPERATE_RET tkl_pwm_info_set(TUYA_PWM_NUM_E ch_id, const TUYA_PWM_BASE_CFG_T *info)
 {
     // --- BEGIN: user implements ---
     if (ch_id > PWM_DEV_NUM)

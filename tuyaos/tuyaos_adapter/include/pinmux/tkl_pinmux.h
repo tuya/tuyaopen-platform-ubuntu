@@ -53,7 +53,7 @@ OPERATE_RET tkl_multi_io_pinmux_config(TUYA_MUL_PIN_CFG_T *cfg, UINT16_T num);
  * @return        16        8       8
  * @return[out] | rsv   |  port | channel |
  */
-INT32_T tkl_io_pin_to_func(UINT32_T pin, TUYA_PIN_TYPE_E pin_type);
+int32_t tkl_io_pin_to_func(uint32_t pin, TUYA_PIN_TYPE_E pin_type);
 
 #ifdef __cplusplus
 } // extern "C"

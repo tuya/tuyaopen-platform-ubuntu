@@ -118,7 +118,7 @@ static void gpio_test_thread(void *arg)
     }
 }
 
-//gpio test Èë¿Úº¯Êý
+//gpio test ï¿½ï¿½Úºï¿½ï¿½ï¿½
 void tkl_gpio_test(void) 
 {
     if(OPRT_OK != tkl_thread_create(&thread, "gpio_test", 1024, 0, gpio_test_thread, NULL)) {
@@ -144,7 +144,7 @@ void tkl_gpio_test(void)
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_gpio_init(TUYA_GPIO_NUM_E pin_id, CONST TUYA_GPIO_BASE_CFG_T *cfg)
+OPERATE_RET tkl_gpio_init(TUYA_GPIO_NUM_E pin_id, const TUYA_GPIO_BASE_CFG_T *cfg)
 {
     // --- BEGIN: user implements ---
     bk_gpio_config_t   bk_gpio_cfg;
@@ -258,7 +258,7 @@ OPERATE_RET tkl_gpio_read(TUYA_GPIO_NUM_E pin_id, TUYA_GPIO_LEVEL_E *level)
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_gpio_irq_init(TUYA_GPIO_NUM_E pin_id, CONST TUYA_GPIO_IRQ_T *cfg)
+OPERATE_RET tkl_gpio_irq_init(TUYA_GPIO_NUM_E pin_id, const TUYA_GPIO_IRQ_T *cfg)
 {
     // --- BEGIN: user implements ---
     bk_gpio_irq_trigger_t trigger;

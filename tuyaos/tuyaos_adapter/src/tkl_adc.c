@@ -163,7 +163,7 @@ OPERATE_RET tkl_adc_deinit(TUYA_ADC_NUM_E port_num)
  *
  * @return adc width
  */
-UINT8_T tkl_adc_width_get(TUYA_ADC_NUM_E port_num)
+uint8_t tkl_adc_width_get(TUYA_ADC_NUM_E port_num)
 {
     // --- BEGIN: user implements ---
     return 12;
@@ -178,7 +178,7 @@ UINT8_T tkl_adc_width_get(TUYA_ADC_NUM_E port_num)
  *
  * @return adc reference voltage(bat: mv)
  */
-UINT32_T tkl_adc_ref_voltage_get(TUYA_ADC_NUM_E port_num)
+uint32_t tkl_adc_ref_voltage_get(TUYA_ADC_NUM_E port_num)
 {
     // --- BEGIN: user implements ---
     return ADC_VOLTAGE_MAX;
@@ -190,7 +190,7 @@ UINT32_T tkl_adc_ref_voltage_get(TUYA_ADC_NUM_E port_num)
  *
  * @return temperature(bat: 'C)
  */
-INT32_T tkl_adc_temperature_get(VOID_T)
+int32_t tkl_adc_temperature_get(VOID_T)
 {
     // --- BEGIN: user implements ---
     return OPRT_NOT_SUPPORTED;
@@ -206,7 +206,7 @@ INT32_T tkl_adc_temperature_get(VOID_T)
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_adc_read_data(TUYA_ADC_NUM_E port_num, INT32_T *buff, UINT16_T len)
+OPERATE_RET tkl_adc_read_data(TUYA_ADC_NUM_E port_num, int32_t *buff, UINT16_T len)
 {
     // --- BEGIN: user implements ---
     OPERATE_RET ret = OPRT_OK;
@@ -242,14 +242,14 @@ OPERATE_RET tkl_adc_read_data(TUYA_ADC_NUM_E port_num, INT32_T *buff, UINT16_T l
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  *
  */
-OPERATE_RET tkl_adc_read_single_channel(TUYA_ADC_NUM_E port_num, UINT8_T ch_id, INT32_T *data)
+OPERATE_RET tkl_adc_read_single_channel(TUYA_ADC_NUM_E port_num, uint8_t ch_id, int32_t *data)
 {
     // --- BEGIN: user implements ---
     signed char i = 0;
     unsigned int status;
     UCHAR_T data_buff_size = 0;
-    UINT_T sum = 0;
-    UINT_T index;
+    uint32_t sum = 0;
+    uint32_t index;
     int adc_hdl;
     unsigned short temp_adc_mv = 0;
     unsigned short temp_result = 0;
@@ -354,12 +354,12 @@ OPERATE_RET tkl_adc_read_single_channel(TUYA_ADC_NUM_E port_num, UINT8_T ch_id, 
  *
  */
 
-OPERATE_RET tkl_adc_read_voltage(TUYA_ADC_NUM_E port_num, INT32_T *buff, UINT16_T len)
+OPERATE_RET tkl_adc_read_voltage(TUYA_ADC_NUM_E port_num, int32_t *buff, UINT16_T len)
 {
     // --- BEGIN: user implements ---
     OPERATE_RET ret = OPRT_COM_ERROR;
-    UINT32_T ref = tkl_adc_ref_voltage_get(port_num);
-    INT32_T i = 0;
+    uint32_t ref = tkl_adc_ref_voltage_get(port_num);
+    int32_t i = 0;
 
     ret = tkl_adc_read_data(port_num, buff, len);
     if (OPRT_OK == ret) {
