@@ -23,7 +23,7 @@
 TKL_WIRED_STATUS_CHANGE_CB event_cb;
 pthread_t  wired_event_thread = 0;
 
-STATIC OPERATE_RET __tkl_wired_get_status_by_name(CONST CHAR_T *if_name, TKL_WIRED_STAT_E *status)
+static OPERATE_RET __tkl_wired_get_status_by_name(const char *if_name, TKL_WIRED_STAT_E *status)
 {
     int sockfd;
     struct ifreq ifr;
@@ -34,7 +34,6 @@ STATIC OPERATE_RET __tkl_wired_get_status_by_name(CONST CHAR_T *if_name, TKL_WIR
         return OPRT_SOCK_ERR;
     }
 
-    memset(&ifr, 0, sizeof(struct ifreq));
     strncpy(ifr.ifr_name, if_name, strlen(if_name));
     if (ioctl(sockfd, SIOCGIFFLAGS, &ifr) < 0) {
         perror("ioctl");
@@ -48,7 +47,7 @@ STATIC OPERATE_RET __tkl_wired_get_status_by_name(CONST CHAR_T *if_name, TKL_WIR
     return OPRT_OK;       
 }
 
-STATIC VOID *wifi_status_event_cb(VOID *arg)
+static void *wifi_status_event_cb(void *arg)
 {
     TKL_WIRED_STAT_E last_stat = -1;
     TKL_WIRED_STAT_E stat = TKL_WIRED_LINK_DOWN;
@@ -140,7 +139,7 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_wired_set_status_cb(TKL_WIRED_STATUS_CHANGE_
     return OPRT_OK;
 }
 
-STATIC OPERATE_RET __tkl_wired_get_ip_by_name(CONST CHAR_T *if_name, NW_IP_S *ip)
+static OPERATE_RET __tkl_wired_get_ip_by_name(const char *if_name, NW_IP_S *ip)
 {
     int sock;
     struct ifreq ifr;
@@ -156,16 +155,29 @@ STATIC OPERATE_RET __tkl_wired_get_ip_by_name(CONST CHAR_T *if_name, NW_IP_S *ip
         close(sock);
         return OPRT_COM_ERROR;
     }
-    strncpy(ip->ip, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr), SIZEOF(ip->ip));
+    strncpy(ip->ip, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr), sizeof(ip->ip));
 
     if (ioctl(sock, SIOCGIFNETMASK, &ifr) < 0) {
         close(sock);
         return OPRT_COM_ERROR;
     }
-    strncpy(ip->mask, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_netmask)->sin_addr), SIZEOF(ip->mask));
+    strncpy(ip->mask, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_netmask)->sin_addr), sizeof(ip->mask));
 
     close(sock);
     return OPRT_OK;
+}
+
+/**
+ * @brief  set the ip address of the wired link
+ *
+ * @param[in]   ip: the ip address
+ *
+ * @return OPRT_OK on success. Others on error, please refer to
+ * tuya_error_code.h
+ */
+OPERATE_RET tkl_wired_set_ip(NW_IP_S *ip)
+{
+    return OPRT_NOT_SUPPORTED;
 }
 
 /**
@@ -228,7 +240,7 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_wired_get_mac(NW_MAC_S *mac)
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_wired_set_mac(CONST NW_MAC_S *mac)
+TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_wired_set_mac(const NW_MAC_S *mac)
 {
     return OPRT_OK;
 }

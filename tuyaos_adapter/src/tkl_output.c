@@ -20,7 +20,7 @@
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-TUYA_WEAK_ATTRIBUTE VOID_T tkl_log_output(IN CONST CHAR_T *str, ...)
+TUYA_WEAK_ATTRIBUTE void tkl_log_output(const char *str, ...)
 {
     printf("%s", str);
     fflush(stdout);
@@ -30,13 +30,13 @@ TUYA_WEAK_ATTRIBUTE VOID_T tkl_log_output(IN CONST CHAR_T *str, ...)
 /**
 * @brief Close log port
 *
-* @param VOID_T
+* @param void
 *
 * @note This API is used for closing log port.
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_log_close(VOID_T)
+TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_log_close(void)
 {
     return OPRT_OK;
 }
@@ -44,13 +44,13 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_log_close(VOID_T)
 /**
 * @brief Open log port
 *
-* @param VOID_T
+* @param void
 *
 * @note This API is used for openning log port.
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_log_open(VOID_T)
+TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_log_open(void)
 {
     return OPRT_OK;
 }

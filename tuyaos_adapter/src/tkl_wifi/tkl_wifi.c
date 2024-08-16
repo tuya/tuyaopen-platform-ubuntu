@@ -107,7 +107,7 @@ OPERATE_RET tkl_wifi_init(WIFI_EVENT_CB cb)
     return OPRT_OK;
 }
 
-OPERATE_RET tkl_wifi_set_cur_channel(UCHAR_T chan)
+OPERATE_RET tkl_wifi_set_cur_channel(uint8_t chan)
 {
     int ret = 0;
 
@@ -122,7 +122,7 @@ OPERATE_RET tkl_wifi_set_cur_channel(UCHAR_T chan)
     return OPRT_OK;
 }
 
-OPERATE_RET tkl_wifi_get_cur_channel(UCHAR_T *chan)
+OPERATE_RET tkl_wifi_get_cur_channel(uint8_t *chan)
 {
     int ret = 0;
     unsigned char channel = 0;
@@ -143,7 +143,7 @@ OPERATE_RET tkl_wifi_get_cur_channel(UCHAR_T *chan)
     return OPRT_OK;
 }
 
-OPERATE_RET tkl_wifi_scan_ap(CONST SCHAR_T *ssid, AP_IF_S **ap_ary, UINT_T *num)
+OPERATE_RET tkl_wifi_scan_ap(const int8_t *ssid, AP_IF_S **ap_ary, uint32_t *num)
 {
     int ret = 0;
     int index;
@@ -199,6 +199,18 @@ OPERATE_RET tkl_wifi_release_ap(AP_IF_S *ap)
     return OPRT_OK;
 }
 
+/**
+ * @brief set wifi ip info.when wifi works in
+ *        ap+station mode, wifi has two ips.
+ *
+ * @param[in]       wf     wifi function type
+ * @param[in]       ip     the ip addr info
+ * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+ */
+OPERATE_RET tkl_wifi_set_ip(WF_IF_E wf, NW_IP_S *ip)
+{
+    return OPRT_OK;
+}
 
 OPERATE_RET tkl_wifi_get_ip(WF_IF_E wf, NW_IP_S *ip)
 {
@@ -241,7 +253,7 @@ OPERATE_RET tkl_wifi_get_ip(WF_IF_E wf, NW_IP_S *ip)
     return OPRT_OK;
 }
 
-OPERATE_RET tkl_wifi_set_mac(WF_IF_E wf, CONST NW_MAC_S *mac)
+OPERATE_RET tkl_wifi_set_mac(WF_IF_E wf, const NW_MAC_S *mac)
 {
     int   ret    = 0;
 
@@ -257,7 +269,7 @@ OPERATE_RET tkl_wifi_set_mac(WF_IF_E wf, CONST NW_MAC_S *mac)
     return OPRT_OK;
 }
 
-OPERATE_RET tkl_wifi_get_mac(CONST WF_IF_E wf, NW_MAC_S *mac)
+OPERATE_RET tkl_wifi_get_mac(const WF_IF_E wf, NW_MAC_S *mac)
 {
     int   ret    = 0;
 
@@ -280,7 +292,7 @@ OPERATE_RET tkl_wifi_get_mac(CONST WF_IF_E wf, NW_MAC_S *mac)
     return OPRT_OK;
 }
 
-OPERATE_RET tkl_wifi_set_work_mode(CONST WF_WK_MD_E mode)
+OPERATE_RET tkl_wifi_set_work_mode(const WF_WK_MD_E mode)
 {
     int ret = 0;
 
@@ -351,7 +363,7 @@ OPERATE_RET tkl_wifi_get_work_mode(WF_WK_MD_E *mode)
     return OPRT_OK;
 }
 
-OPERATE_RET tkl_wifi_start_ap(CONST WF_AP_CFG_IF_S *cfg)
+OPERATE_RET tkl_wifi_start_ap(const WF_AP_CFG_IF_S *cfg)
 {
     int ret = 0;
     
@@ -384,7 +396,7 @@ OPERATE_RET tkl_wifi_start_ap(CONST WF_AP_CFG_IF_S *cfg)
     return OPRT_OK;
 }
 
-OPERATE_RET tkl_wifi_stop_ap(VOID_T)
+OPERATE_RET tkl_wifi_stop_ap(void)
 {
     int ret = 0;
 
@@ -438,7 +450,7 @@ OPERATE_RET tkl_wifi_get_connected_ap_info(FAST_WF_CONNECTED_AP_INFO_T **fast_ap
     return OPRT_OK;
 }
 
-OPERATE_RET tkl_wifi_station_fast_connect(CONST FAST_WF_CONNECTED_AP_INFO_T *fast_ap_info)
+OPERATE_RET tkl_wifi_station_fast_connect(const FAST_WF_CONNECTED_AP_INFO_T *fast_ap_info)
 {
     int ret = 0;
     FAST_CONNECTED_AP_INFO_S *ap_info_s = NULL;
@@ -453,7 +465,7 @@ OPERATE_RET tkl_wifi_station_fast_connect(CONST FAST_WF_CONNECTED_AP_INFO_T *fas
     return OPRT_OK;
 }
 
-OPERATE_RET tkl_wifi_station_connect(CONST SCHAR_T *ssid, CONST SCHAR_T *passwd)
+OPERATE_RET tkl_wifi_station_connect(const int8_t *ssid, const int8_t *passwd)
 {
     int ret = 0;
 
@@ -469,7 +481,7 @@ OPERATE_RET tkl_wifi_station_connect(CONST SCHAR_T *ssid, CONST SCHAR_T *passwd)
     return OPRT_OK;
 }
 
-OPERATE_RET tkl_wifi_station_disconnect(VOID_T)
+OPERATE_RET tkl_wifi_station_disconnect(void)
 {
     int ret = 0;
 
@@ -489,7 +501,7 @@ OPERATE_RET tkl_wifi_station_disconnect(VOID_T)
     return OPRT_OK;
 }
 
-OPERATE_RET tkl_wifi_station_get_conn_ap_rssi(SCHAR_T *rssi)
+OPERATE_RET tkl_wifi_station_get_conn_ap_rssi(int8_t *rssi)
 {
     int ret = 0;
 
@@ -506,7 +518,7 @@ OPERATE_RET tkl_wifi_station_get_conn_ap_rssi(SCHAR_T *rssi)
     return OPRT_OK;
 }
 
-OPERATE_RET tkl_wifi_get_bssid(UCHAR_T *mac)
+OPERATE_RET tkl_wifi_get_bssid(uint8_t *mac)
 {
     int ret = 0;
 
@@ -592,7 +604,7 @@ OPERATE_RET tkl_wifi_station_get_status(WF_STATION_STAT_E *stat)
     return OPRT_OK;
 }
 
-OPERATE_RET tkl_wifi_set_country_code(CONST COUNTRY_CODE_E ccode)
+OPERATE_RET tkl_wifi_set_country_code(const COUNTRY_CODE_E ccode)
 {
     int ret = 0;
     char *country = NULL;
@@ -686,7 +698,7 @@ static void *sniffer_process(void *arg)
 }
 
 
-OPERATE_RET tkl_wifi_set_sniffer(CONST BOOL_T en, CONST SNIFFER_CALLBACK cb)
+OPERATE_RET tkl_wifi_set_sniffer(const BOOL_T en, const SNIFFER_CALLBACK cb)
 {
     int iret = 0;
 
@@ -710,7 +722,7 @@ OPERATE_RET tkl_wifi_set_sniffer(CONST BOOL_T en, CONST SNIFFER_CALLBACK cb)
 }
 
 
-OPERATE_RET tkl_wifi_send_mgnt(CONST UCHAR_T *buf, CONST UINT_T len)
+OPERATE_RET tkl_wifi_send_mgnt(const uint8_t *buf, const uint32_t len)
 {
     char *ifname = WLAN_AP;
     struct ifreq t_ifr;
@@ -797,7 +809,7 @@ static void *mgnt_process(void *arg)
     return NULL;
 }
 
-OPERATE_RET tkl_wifi_register_recv_mgnt_callback(CONST BOOL_T enable, CONST WIFI_REV_MGNT_CB recv_cb)
+OPERATE_RET tkl_wifi_register_recv_mgnt_callback(const BOOL_T enable, const WIFI_REV_MGNT_CB recv_cb)
 {
     //!: TODO: 一般接收管理帧方式，通常需要在wifi连着路由器的情况，此时需要额外的一张网卡来完成
     char *ifname  = s_tkl_wifi.sta;
@@ -824,13 +836,13 @@ OPERATE_RET tkl_wifi_register_recv_mgnt_callback(CONST BOOL_T enable, CONST WIFI
     return OPRT_OK;
 }
 
-OPERATE_RET tkl_wifi_set_rf_calibrated(VOID_T)
+OPERATE_RET tkl_wifi_set_rf_calibrated(void)
 {
     TKL_LOGD("set rf calibrated is not support");
     return OPRT_COM_ERROR;
 }
 
-OPERATE_RET tkl_wifi_set_lp_mode(CONST BOOL_T enable, CONST UCHAR_T dtim)
+OPERATE_RET tkl_wifi_set_lp_mode(const BOOL_T enable, const uint8_t dtim)
 {
     int iret = 0;
 
@@ -839,7 +851,7 @@ OPERATE_RET tkl_wifi_set_lp_mode(CONST BOOL_T enable, CONST UCHAR_T dtim)
     return OPRT_COM_ERROR;
 }
 
-OPERATE_RET tkl_wifi_ioctl(WF_IOCTL_CMD_E cmd,  VOID *args)
+OPERATE_RET tkl_wifi_ioctl(WF_IOCTL_CMD_E cmd,  void *args)
 {
     return OPRT_NOT_FOUND;
 }

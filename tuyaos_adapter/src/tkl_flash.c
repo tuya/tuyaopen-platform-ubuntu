@@ -54,7 +54,7 @@ static TUYA_FILE s_flash_file = 0;
  * @param[in]       size        size of buffer
  * @return int 0=成功，非0=失败
  */
-OPERATE_RET tkl_flash_read(UINT_T addr, UCHAR_T *dst, UINT_T size)
+OPERATE_RET tkl_flash_read(uint32_t addr, uint8_t *dst, uint32_t size)
 {
     int ret = 0;
     if(!s_flash_file) {
@@ -65,7 +65,7 @@ OPERATE_RET tkl_flash_read(UINT_T addr, UCHAR_T *dst, UINT_T size)
         return OPRT_FILE_OPEN_FAILED;
     }
 
-    ret = tkl_fread((VOID_T*)dst, size, s_flash_file);
+    ret = tkl_fread((void*)dst, size, s_flash_file);
     if(size != ret) {
         return OPRT_FILE_READ_FAILED;
     }
@@ -81,7 +81,7 @@ OPERATE_RET tkl_flash_read(UINT_T addr, UCHAR_T *dst, UINT_T size)
  * @param[in]       size        size of buffer
  * @return int 0=成功，非0=失败
  */
-OPERATE_RET tkl_flash_write(UINT_T addr, CONST UCHAR_T *src, UINT_T size)
+OPERATE_RET tkl_flash_write(uint32_t addr, const uint8_t *src, uint32_t size)
 {
     if(!s_flash_file) {
         return OPRT_RESOURCE_NOT_READY;
@@ -91,7 +91,7 @@ OPERATE_RET tkl_flash_write(UINT_T addr, CONST UCHAR_T *src, UINT_T size)
         return OPRT_FILE_OPEN_FAILED;
     }
 
-    if(size != tkl_fwrite((VOID_T*)src, size, s_flash_file)) {
+    if(size != tkl_fwrite((void*)src, size, s_flash_file)) {
         return OPRT_FILE_WRITE_FAILED;
     }
 
@@ -108,7 +108,7 @@ OPERATE_RET tkl_flash_write(UINT_T addr, CONST UCHAR_T *src, UINT_T size)
  * @param[in]       size        size of flash block
  * @return int 0=成功，非0=失败
  */
-OPERATE_RET tkl_flash_erase(UINT_T addr, UINT_T size)
+OPERATE_RET tkl_flash_erase(uint32_t addr, uint32_t size)
 {
     return OPRT_OK;
 }
@@ -130,7 +130,7 @@ static OPERATE_RET __flash_file_init(void)
     tkl_fflush(s_flash_file);
     tkl_fsync(tkl_fileno(s_flash_file));
 
-    // extern OPERATE_RET ws_db_init_mf(VOID);
+    // extern OPERATE_RET ws_db_init_mf(void);
     // ws_db_init_mf();
 
     return OPRT_OK;
@@ -221,7 +221,7 @@ OPERATE_RET tkl_flash_get_one_type_info(TUYA_FLASH_TYPE_E type, TUYA_FLASH_BASE_
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-OPERATE_RET tkl_flash_lock(UINT_T addr, UINT_T size)
+OPERATE_RET tkl_flash_lock(uint32_t addr, uint32_t size)
 {
     return OPRT_NOT_SUPPORTED;
 }
@@ -236,7 +236,7 @@ OPERATE_RET tkl_flash_lock(UINT_T addr, UINT_T size)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-OPERATE_RET tkl_flash_unlock(UINT_T addr, UINT_T size)
+OPERATE_RET tkl_flash_unlock(uint32_t addr, uint32_t size)
 {
     return OPRT_NOT_SUPPORTED;
 }

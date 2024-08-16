@@ -1,25 +1,35 @@
-#编译所用变量
+include $(OUTPUT_DIR)/../cache/using.config
+
 COMPILE_PREX ?=
 
 CC = $(COMPILE_PREX)gcc
 
-# 模块源代码
-LOCAL_SRC_FILES := $(shell find tuyaos_adapter/src -name "*.c" -o -name "*.cpp" -o -name "*.cc")
-LOCAL_SRC_FILES += $(shell find tuyaos_adapter/include -name "*.c" -o -name "*.cpp" -o -name "*.cc")
+LOCAL_SRC_FILES := $(shell find tuyaos_adapter/include/utilities -name "*.c" -o -name "*.cpp" -o -name "*.cc")
+LOCAL_SRC_FILES += $(shell find tuyaos_adapter/src -maxdepth 1 -name "*.c" -o -name "*.cpp" -o -name "*.cc" )
+LOCAL_SRC_FILES += tuyaos_adapter/include/init/src/tkl_init_common.c
 
-# 模块内部CFLAGS：仅供本组件使用
+ifeq ($(CONFIG_ENABLE_WIFI), y)
+LOCAL_SRC_FILES += $(shell find tuyaos_adapter/src/tkl_wifi -name "*.c" -o -name "*.cpp" -o -name "*.cc")
+LOCAL_SRC_FILES += tuyaos_adapter/include/init/src/tkl_init_wifi.c
+endif
+ifeq ($(CONFIG_ENABLE_BLUETOOTH), y)
+LOCAL_SRC_FILES += $(shell find tuyaos_adapter/src/tkl_bt -name "*.c" -o -name "*.cp p" -o -name "*.cc")
+endif
+ifeq ($(CONFIG_ENABLE_WIRED), y)
+LOCAL_SRC_FILES += tuyaos_adapter/include/init/src/tkl_init_wired.c
+endif
+
 LOCAL_CFLAGS := $(addprefix -I, $(shell find tuyaos_adapter -type d)) 
 LOCAL_CFLAGS += $(addprefix -I, $(shell find tuyaos_adapter/include -type d))
 LOCAL_CFLAGS += $(foreach base_dir, $(HEADER_DIR), $(addprefix -I , $(base_dir)))
 
-LOCAL_CFLAGS += -fsanitize=address -fno-omit-frame-pointer -g
+# -fsanitize=address -fno-omit-frame-pointer
+LOCAL_CFLAGS += -g
 
 LOCAL_OUTPUT_DIR = $(OUTPUT_DIR)/$(EXAMPLE_NAME)_$(EXAMPLE_VER)
 LOCAL_OUTPUT_DIR_OBJS = $(LOCAL_OUTPUT_DIR)/.objs
 
-#user的obj命令
 LOCAL_OBJS = $(addsuffix .o, $(LOCAL_SRC_FILES))
-#user的实际obj地址
 LOCAL_OBJS_OUT =  $(addprefix $(LOCAL_OUTPUT_DIR_OBJS)/, $(LOCAL_OBJS))
 DEP_FILES = $(patsubst %.o,%.d,$(LOCAL_OBJS_OUT))
 
@@ -30,7 +40,6 @@ $(LOCAL_OUTPUT_DIR_OBJS)/%.c.o: %.c
 
 -include $(DEP_FILES)
 
-#库文件路径
 TUYAOS_LIB_DIR = $(LIBS_DIR)
 
 #链接选项

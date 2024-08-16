@@ -20,16 +20,16 @@
 
 
 typedef struct {
-    INT_T               fd;
+    int               fd;
     pthread_t           tid;
     TUYA_UART_IRQ_CB    rx_cb;
-    UINT8_T             readchar;
-    UINT8_T             readbuff[1024];
+    uint8_t             readchar;
+    uint8_t             readbuff[1024];
 } uart_dev_t;
 
 static uart_dev_t s_uart_dev[3];
 
-STATIC VOID *__irq_handler(VOID *arg)
+static void *__irq_handler(void *arg)
 {
     uart_dev_t *uart_dev = arg;
 
@@ -45,7 +45,7 @@ STATIC VOID *__irq_handler(VOID *arg)
     }
 }
 
-STATIC VOID *__udp_irq_handler(VOID *arg)
+static void *__udp_irq_handler(void *arg)
 {
     uart_dev_t *uart_dev = arg;
 
@@ -77,7 +77,7 @@ STATIC VOID *__udp_irq_handler(VOID *arg)
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_uart_init(UINT32_T port_id, TUYA_UART_BASE_CFG_T *cfg)
+OPERATE_RET tkl_uart_init(uint32_t port_id, TUYA_UART_BASE_CFG_T *cfg)
 {
     if (0 == port_id) {
         struct termios term_orig;
@@ -134,7 +134,7 @@ OPERATE_RET tkl_uart_init(UINT32_T port_id, TUYA_UART_BASE_CFG_T *cfg)
  *                         you can input like this TUYA_UART_PORT_ID(TUYA_UART_SYS, 2)
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_uart_deinit(UINT32_T port_id)
+OPERATE_RET tkl_uart_deinit(uint32_t port_id)
 {
     close(s_uart_dev[port_id].fd);
 
@@ -160,7 +160,7 @@ OPERATE_RET tkl_uart_deinit(UINT32_T port_id)
  *
  * @return return > 0: number of data written; return <= 0: write errror
  */
-INT_T tkl_uart_write(UINT32_T port_id, VOID_T *buff, UINT16_T len)
+int tkl_uart_write(uint32_t port_id, void *buff, uint16_t len)
 {
 
     if (0 == port_id) {
@@ -193,7 +193,7 @@ INT_T tkl_uart_write(UINT32_T port_id, VOID_T *buff, UINT16_T len)
  *
  * @return none
  */
-VOID_T tkl_uart_rx_irq_cb_reg(UINT32_T port_id, TUYA_UART_IRQ_CB rx_cb)
+void tkl_uart_rx_irq_cb_reg(uint32_t port_id, TUYA_UART_IRQ_CB rx_cb)
 {
     s_uart_dev[port_id].rx_cb = rx_cb;
     return;
@@ -214,7 +214,7 @@ VOID_T tkl_uart_rx_irq_cb_reg(UINT32_T port_id, TUYA_UART_IRQ_CB rx_cb)
  *
  * @return none
  */
-VOID_T tkl_uart_tx_irq_cb_reg(UINT32_T port_id, TUYA_UART_IRQ_CB tx_cb)
+void tkl_uart_tx_irq_cb_reg(uint32_t port_id, TUYA_UART_IRQ_CB tx_cb)
 {
     return;
 }
@@ -233,7 +233,7 @@ VOID_T tkl_uart_tx_irq_cb_reg(UINT32_T port_id, TUYA_UART_IRQ_CB tx_cb)
  * 
  * @return return >= 0: number of data read; return < 0: read errror
  */
-INT_T tkl_uart_read(UINT32_T port_id, VOID_T *buff, UINT16_T len)
+int tkl_uart_read(uint32_t port_id, void *buff, uint16_t len)
 {
     if (0 == port_id) {
         return read(s_uart_dev[port_id].fd, buff, len);
@@ -258,7 +258,7 @@ INT_T tkl_uart_read(UINT32_T port_id, VOID_T *buff, UINT16_T len)
  * 
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_uart_set_tx_int(UINT32_T port_id, BOOL_T enable)
+OPERATE_RET tkl_uart_set_tx_int(uint32_t port_id, BOOL_T enable)
 {
     return OPRT_NOT_SUPPORTED;
 }
@@ -276,7 +276,7 @@ OPERATE_RET tkl_uart_set_tx_int(UINT32_T port_id, BOOL_T enable)
  * 
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_uart_set_rx_flowctrl(UINT32_T port_id, BOOL_T enable)
+OPERATE_RET tkl_uart_set_rx_flowctrl(uint32_t port_id, BOOL_T enable)
 {
     return OPRT_NOT_SUPPORTED;
 }
@@ -296,7 +296,7 @@ OPERATE_RET tkl_uart_set_rx_flowctrl(UINT32_T port_id, BOOL_T enable)
  *                        >0 : timeout in milliseconds
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_uart_wait_for_data(UINT32_T port_id, INT_T timeout_ms)
+OPERATE_RET tkl_uart_wait_for_data(uint32_t port_id, int timeout_ms)
 {
     return OPRT_NOT_SUPPORTED;
 }
@@ -310,7 +310,7 @@ OPERATE_RET tkl_uart_wait_for_data(UINT32_T port_id, INT_T timeout_ms)
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_uart_ioctl(UINT32_T port_id, UINT32_T cmd, VOID *arg)
+OPERATE_RET tkl_uart_ioctl(uint32_t port_id, uint32_t cmd, void *arg)
 {
     return OPRT_NOT_SUPPORTED;
 }

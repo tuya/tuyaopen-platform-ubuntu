@@ -18,10 +18,10 @@
 typedef struct {
     pthread_t       id;
     THREAD_FUNC_T   func;
-    VOID_T*         arg;
+    void*         arg;
 } THREAD_DATA;
 
-STATIC VOID_T* _tkl_thread_wrap_func(VOID_T* arg)
+static void* _tkl_thread_wrap_func(void* arg)
 {
     THREAD_DATA* thread_data = (THREAD_DATA*)arg;
     if (thread_data && thread_data->func) {
@@ -46,17 +46,17 @@ STATIC VOID_T* _tkl_thread_wrap_func(VOID_T* arg)
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
 TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_thread_create(TKL_THREAD_HANDLE* thread,
-                           CONST CHAR_T* name,
-                           UINT_T stack_size,
-                           UINT_T priority,
+                           const char* name,
+                           uint32_t stack_size,
+                           uint32_t priority,
                            THREAD_FUNC_T func,
-                           VOID_T* CONST arg)
+                           void* const arg)
 {
     if (!thread) {
         return OPRT_INVALID_PARM;
     }
     
-    INT_T ret = 0;
+    int ret = 0;
     THREAD_DATA* thread_data = (THREAD_DATA*)tkl_system_malloc(sizeof(THREAD_DATA));
     if (thread_data == NULL) {
        return OPRT_MALLOC_FAILED;
@@ -113,7 +113,7 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_thread_release(TKL_THREAD_HANDLE thread)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_thread_get_watermark(TKL_THREAD_HANDLE thread, UINT_T* watermark)
+TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_thread_get_watermark(TKL_THREAD_HANDLE thread, uint32_t* watermark)
 {
     *watermark = -1;
     return OPRT_OK;
@@ -146,7 +146,7 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_thread_get_id(TKL_THREAD_HANDLE *thread)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_thread_set_self_name(CONST CHAR_T* name)
+TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_thread_set_self_name(const char* name)
 {
     if (!name) {
         return OPRT_INVALID_PARM;

@@ -18,87 +18,87 @@ extern "C" {
 #endif
 
 struct hci_request {
-    UINT16_T ogf;
-    UINT16_T ocf;
-    INT_T event;
-    VOID_T *cparam;
-    INT_T clen;
-    VOID_T *rparam;
-    INT_T rlen;
+    uint16_t ogf;
+    uint16_t ocf;
+    int event;
+    void *cparam;
+    int clen;
+    void *rparam;
+    int rlen;
 };
 
-STATIC INLINE VOID_T hci_set_bit(INT_T nr, VOID_T *addr)
+static INLINE void hci_set_bit(int nr, void *addr)
 {
-    *((UINT32_T *)addr + (nr >> 5)) |= (1 << (nr & 31));
+    *((uint32_t *)addr + (nr >> 5)) |= (1 << (nr & 31));
 }
 
-STATIC INLINE VOID_T hci_clear_bit(INT_T nr, VOID_T *addr)
+static INLINE void hci_clear_bit(int nr, void *addr)
 {
-    *((UINT32_T *)addr + (nr >> 5)) &= ~(1 << (nr & 31));
+    *((uint32_t *)addr + (nr >> 5)) &= ~(1 << (nr & 31));
 }
 
-STATIC INLINE INT_T hci_test_bit(INT_T nr, VOID_T *addr)
+static INLINE int hci_test_bit(int nr, void *addr)
 {
-    return *((UINT32_T *)addr + (nr >> 5)) & (1 << (nr & 31));
+    return *((uint32_t *)addr + (nr >> 5)) & (1 << (nr & 31));
 }
 
 /* HCI filter tools */
-STATIC INLINE VOID_T hci_filter_clear(struct hci_filter *f)
+static INLINE void hci_filter_clear(struct hci_filter *f)
 {
     memset(f, 0, sizeof(*f));
 }
 
-STATIC INLINE VOID_T hci_filter_set_ptype(INT_T t, struct hci_filter *f)
+static INLINE void hci_filter_set_ptype(int t, struct hci_filter *f)
 {
     hci_set_bit((t == HCI_VENDOR_PKT) ? 0 : (t & HCI_FLT_TYPE_BITS), &f->type_mask);
 }
 
-STATIC INLINE VOID_T hci_filter_clear_ptype(INT_T t, struct hci_filter *f)
+static INLINE void hci_filter_clear_ptype(int t, struct hci_filter *f)
 {
     hci_clear_bit((t == HCI_VENDOR_PKT) ? 0 : (t & HCI_FLT_TYPE_BITS), &f->type_mask);
 }
 
-STATIC INLINE INT_T hci_filter_test_ptype(INT_T t, struct hci_filter *f)
+static INLINE int hci_filter_test_ptype(int t, struct hci_filter *f)
 {
     return hci_test_bit((t == HCI_VENDOR_PKT) ? 0 : (t & HCI_FLT_TYPE_BITS), &f->type_mask);
 }
 
-STATIC INLINE VOID_T hci_filter_all_ptypes(struct hci_filter *f)
+static INLINE void hci_filter_all_ptypes(struct hci_filter *f)
 {
-    memset((VOID_T *)&f->type_mask, 0xff, sizeof(f->type_mask));
+    memset((void *)&f->type_mask, 0xff, sizeof(f->type_mask));
 }
 
-STATIC INLINE VOID_T hci_filter_set_event(INT_T e, struct hci_filter *f)
+static INLINE void hci_filter_set_event(int e, struct hci_filter *f)
 {
     hci_set_bit((e & HCI_FLT_EVENT_BITS), &f->event_mask);
 }
 
-STATIC INLINE VOID_T hci_filter_clear_event(INT_T e, struct hci_filter *f)
+static INLINE void hci_filter_clear_event(int e, struct hci_filter *f)
 {
     hci_clear_bit((e & HCI_FLT_EVENT_BITS), &f->event_mask);
 }
 
-STATIC INLINE INT_T hci_filter_test_event(INT_T e, struct hci_filter *f)
+static INLINE int hci_filter_test_event(int e, struct hci_filter *f)
 {
     return hci_test_bit((e & HCI_FLT_EVENT_BITS), &f->event_mask);
 }
 
-STATIC INLINE VOID_T hci_filter_all_events(struct hci_filter *f)
+static INLINE void hci_filter_all_events(struct hci_filter *f)
 {
-    memset((VOID_T *)f->event_mask, 0xff, sizeof(f->event_mask));
+    memset((void *)f->event_mask, 0xff, sizeof(f->event_mask));
 }
 
-STATIC INLINE VOID_T hci_filter_set_opcode(INT_T opcode, struct hci_filter *f)
+static INLINE void hci_filter_set_opcode(int opcode, struct hci_filter *f)
 {
     f->opcode = opcode;
 }
 
-STATIC INLINE VOID_T hci_filter_clear_opcode(struct hci_filter *f)
+static INLINE void hci_filter_clear_opcode(struct hci_filter *f)
 {
     f->opcode = 0;
 }
 
-STATIC INLINE INT_T hci_filter_test_opcode(INT_T opcode, struct hci_filter *f)
+static INLINE int hci_filter_test_opcode(int opcode, struct hci_filter *f)
 {
     return (f->opcode == opcode);
 }

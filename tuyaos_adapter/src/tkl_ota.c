@@ -8,7 +8,7 @@
 #include "tkl_ota.h"
 #include "tuya_error_code.h"
 
-STATIC FILE *s_upgrade_fd = NULL;
+static FILE *s_upgrade_fd = NULL;
 
 
 /**
@@ -21,7 +21,7 @@ STATIC FILE *s_upgrade_fd = NULL;
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_ota_get_ability(UINT_T *image_size, UINT32_T *type)
+TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_ota_get_ability(uint32_t *image_size, uint32_t *type)
 {
     *image_size = -1;
     *type = TUYA_OTA_FULL|TUYA_OTA_DIFF;
@@ -37,7 +37,7 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_ota_get_ability(UINT_T *image_size, UINT32_T
  * @return OPRT_OK on success, others on failed
  *
  */
-TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_ota_start_notify(UINT_T image_size, TUYA_OTA_TYPE_E type, TUYA_OTA_PATH_E path)
+TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_ota_start_notify(uint32_t image_size, TUYA_OTA_TYPE_E type, TUYA_OTA_PATH_E path)
 {
 
     FILE *p_upgrade_fd = (FILE *)s_upgrade_fd;
@@ -73,7 +73,7 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_ota_start_notify(UINT_T image_size, TUYA_OTA
  * @return OPRT_OK on success, others on failed
  *
  */
-TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_ota_data_process(TUYA_OTA_DATA_T *pack, UINT_T* remain_len)
+TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_ota_data_process(TUYA_OTA_DATA_T *pack, uint32_t* remain_len)
 {
     printf("Rev File Data Total_len %d, Offset:%u Len:%u\r\n", pack->total_len, pack->offset, pack->len);
     FILE *p_upgrade_fd = (FILE *)s_upgrade_fd;

@@ -37,11 +37,11 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_mutex_create_init(TKL_MUTEX_HANDLE *handle)
         return OPRT_INVALID_PARM;
     
     P_TKL_MUTEX_MANAGE mutex_manage;
-    mutex_manage = (P_TKL_MUTEX_MANAGE)tkl_system_malloc(SIZEOF(TKL_MUTEX_MANAGE));
+    mutex_manage = (P_TKL_MUTEX_MANAGE)tkl_system_malloc(sizeof(TKL_MUTEX_MANAGE));
     if(!(mutex_manage))
         return OPRT_MALLOC_FAILED;
     
-    INT_T ret;
+    int ret;
     pthread_mutexattr_t attr;
 
     ret = pthread_mutexattr_init(&attr);
@@ -78,7 +78,7 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_mutex_create_init(TKL_MUTEX_HANDLE *handle)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_mutex_lock(CONST TKL_MUTEX_HANDLE handle)
+TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_mutex_lock(const TKL_MUTEX_HANDLE handle)
 {
     if(!handle) {
         return OPRT_INVALID_PARM;
@@ -87,7 +87,7 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_mutex_lock(CONST TKL_MUTEX_HANDLE handle)
     P_TKL_MUTEX_MANAGE mutex_manage;
     mutex_manage = (P_TKL_MUTEX_MANAGE)handle;
 
-    INT_T ret;
+    int ret;
     ret= pthread_mutex_lock(&(mutex_manage->mutex));
     if(ret != 0) {
         return OPRT_OS_ADAPTER_MUTEX_LOCK_FAILED;
@@ -105,7 +105,7 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_mutex_lock(CONST TKL_MUTEX_HANDLE handle)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_mutex_unlock(CONST TKL_MUTEX_HANDLE handle)
+TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_mutex_unlock(const TKL_MUTEX_HANDLE handle)
 {
     if(!handle) {
         return OPRT_INVALID_PARM;
@@ -114,7 +114,7 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_mutex_unlock(CONST TKL_MUTEX_HANDLE handle)
     P_TKL_MUTEX_MANAGE mutex_manage;
     mutex_manage = (P_TKL_MUTEX_MANAGE)handle;
     
-    INT_T ret;
+    int ret;
     ret= pthread_mutex_unlock(&(mutex_manage->mutex));
     if(ret != 0) {
         return OPRT_OS_ADAPTER_MUTEX_UNLOCK_FAILED;
@@ -132,7 +132,7 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_mutex_unlock(CONST TKL_MUTEX_HANDLE handle)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_mutex_release(CONST TKL_MUTEX_HANDLE handle)
+TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_mutex_release(const TKL_MUTEX_HANDLE handle)
 {
     if(!handle) {
         return OPRT_INVALID_PARM;
@@ -141,7 +141,7 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_mutex_release(CONST TKL_MUTEX_HANDLE handle)
     P_TKL_MUTEX_MANAGE mutex_manage;
     mutex_manage = (P_TKL_MUTEX_MANAGE)handle;
 
-    INT_T ret;
+    int ret;
     ret= pthread_mutex_destroy(&(mutex_manage->mutex));
     if(ret != 0) {
         return OPRT_OS_ADAPTER_MUTEX_RELEASE_FAILED;
@@ -151,7 +151,7 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_mutex_release(CONST TKL_MUTEX_HANDLE handle)
     return OPRT_OK;
 }
 
-OPERATE_RET tkl_mutex_trylock(CONST TKL_MUTEX_HANDLE mutexHandle)
+OPERATE_RET tkl_mutex_trylock(const TKL_MUTEX_HANDLE mutexHandle)
 {
     return OPRT_NOT_FOUND;
 }

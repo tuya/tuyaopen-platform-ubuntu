@@ -48,12 +48,12 @@ typedef enum {
 
 #pragma pack(1)
 typedef struct {
-    UCHAR_T ssid[WIFI_SSID_LEN+1];
-    UCHAR_T passwd[WIFI_PASSWD_LEN+1];
-    UCHAR_T bssid[6];
-    UINT_T security;
-    UCHAR_T chan; 
-    UCHAR_T psk_set;
+    uint8_t ssid[WIFI_SSID_LEN+1];
+    uint8_t passwd[WIFI_PASSWD_LEN+1];
+    uint8_t bssid[6];
+    uint32_t security;
+    uint8_t chan; 
+    uint8_t psk_set;
 } FAST_CONNECTED_AP_INFO_S;
 
 typedef struct wlan_80211_frame {

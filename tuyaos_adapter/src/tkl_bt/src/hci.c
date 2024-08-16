@@ -25,20 +25,20 @@
 #define BLE_SCAN_ITVL_MS(t) ((t)*1000 / 625)
 #define BLE_SCAN_WIN_MS(t)  ((t)*1000 / 625)
 
-STATIC BOOL_T hci_task_enable               = FALSE;
-STATIC UINT8_T hci_version                  = 0xFF; // 0x08 == 4.2; 0x09 == 5.0
-STATIC INT_T g_dd                           = -1;
-STATIC TKL_BLE_GAP_EVT_FUNC_CB g_gap_evt_cb = NULL;
-STATIC pthread_t hci_task_thId;
+static BOOL_T hci_task_enable               = FALSE;
+static uint8_t hci_version                  = 0xFF; // 0x08 == 4.2; 0x09 == 5.0
+static int g_dd                           = -1;
+static TKL_BLE_GAP_EVT_FUNC_CB g_gap_evt_cb = NULL;
+static pthread_t hci_task_thId;
 
-STATIC VOID_T __hci_evt_callback(TKL_BLE_GAP_EVT_TYPE_E type, INT_T result);
+static void __hci_evt_callback(TKL_BLE_GAP_EVT_TYPE_E type, int result);
 
 /* Open HCI device.
  * Returns device descriptor (dd). */
-STATIC INT_T __hci_open_dev(INT_T dev_id)
+static int __hci_open_dev(int dev_id)
 {
     struct sockaddr_hci a;
-    INT_T dd, err;
+    int dd, err;
     struct hci_filter flt;
 
     /* Check for valid device id */
@@ -80,17 +80,17 @@ failed:
     return -1;
 }
 
-STATIC INT_T __hci_close_dev(INT_T dd)
+static int __hci_close_dev(int dd)
 {
     return close(dd);
 }
 
-STATIC INT_T __hci_send_cmd(INT_T dd, UINT16_T ogf, UINT16_T ocf, UINT8_T plen, VOID_T *param)
+static int __hci_send_cmd(int dd, uint16_t ogf, uint16_t ocf, uint8_t plen, void *param)
 {
-    UINT8_T type = HCI_COMMAND_PKT;
+    uint8_t type = HCI_COMMAND_PKT;
     hci_command_hdr hc;
     struct iovec iv[3];
-    INT_T ivn;
+    int ivn;
 
     hc.opcode = htobs(cmd_opcode_pack(ogf, ocf));
     hc.plen   = plen;
@@ -115,14 +115,14 @@ STATIC INT_T __hci_send_cmd(INT_T dd, UINT16_T ogf, UINT16_T ocf, UINT8_T plen, 
     return 0;
 }
 
-STATIC INT_T __hci_send_req(INT_T dd, struct hci_request *r, INT_T to)
+static int __hci_send_req(int dd, struct hci_request *r, int to)
 {
-    UCHAR_T buf[HCI_MAX_EVENT_SIZE], *ptr;
-    UINT16_T opcode = htobs(cmd_opcode_pack(r->ogf, r->ocf));
+    uint8_t buf[HCI_MAX_EVENT_SIZE], *ptr;
+    uint16_t opcode = htobs(cmd_opcode_pack(r->ogf, r->ocf));
     struct hci_filter nf, of;
     socklen_t olen;
     hci_event_hdr *hdr;
-    INT_T err, try;
+    int err, try;
 
     olen = sizeof(of);
     if (getsockopt(dd, SOL_HCI, HCI_FILTER, &of, &olen) < 0)
@@ -148,11 +148,11 @@ STATIC INT_T __hci_send_req(INT_T dd, struct hci_request *r, INT_T to)
         evt_remote_name_req_complete *rn;
         evt_le_meta_event *me;
         remote_name_req_cp *cp;
-        INT_T len;
+        int len;
 
         if (to) {
             struct pollfd p;
-            INT_T n;
+            int n;
 
             p.fd     = dd;
             p.events = POLLIN;
@@ -178,13 +178,13 @@ STATIC INT_T __hci_send_req(INT_T dd, struct hci_request *r, INT_T to)
             goto failed;
         }
 
-        hdr = (VOID_T *)(buf + 1);
+        hdr = (void *)(buf + 1);
         ptr = buf + (1 + HCI_EVENT_HDR_SIZE);
         len -= (1 + HCI_EVENT_HDR_SIZE);
 
         switch (hdr->evt) {
         case EVT_CMD_STATUS:
-            cs = (VOID_T *)ptr;
+            cs = (void *)ptr;
 
             if (cs->opcode != opcode)
                 continue;
@@ -202,7 +202,7 @@ STATIC INT_T __hci_send_req(INT_T dd, struct hci_request *r, INT_T to)
             goto done;
 
         case EVT_CMD_COMPLETE:
-            cc = (VOID_T *)ptr;
+            cc = (void *)ptr;
 
             if (cc->opcode != opcode)
                 continue;
@@ -218,7 +218,7 @@ STATIC INT_T __hci_send_req(INT_T dd, struct hci_request *r, INT_T to)
             if (hdr->evt != r->event)
                 break;
 
-            rn = (VOID_T *)ptr;
+            rn = (void *)ptr;
             cp = r->cparam;
 
             if (bacmp(&rn->bdaddr, &cp->bdaddr))
@@ -229,7 +229,7 @@ STATIC INT_T __hci_send_req(INT_T dd, struct hci_request *r, INT_T to)
             goto done;
 
         case EVT_LE_META_EVENT:
-            me = (VOID_T *)ptr;
+            me = (void *)ptr;
 
             if (me->subevent != r->event)
                 continue;
@@ -263,7 +263,7 @@ done:
     return 0;
 }
 
-OPERATE_RET hci_dev_up(VOID_T)
+OPERATE_RET hci_dev_up(void)
 {
     __hci_evt_callback(TKL_BLE_EVT_STACK_INIT, 0);
 
@@ -285,7 +285,7 @@ OPERATE_RET hci_dev_up(VOID_T)
     return OPRT_OK;
 }
 
-OPERATE_RET hci_dev_down(VOID_T)
+OPERATE_RET hci_dev_down(void)
 {
     __hci_evt_callback(TKL_BLE_EVT_STACK_DEINIT, 0);
 
@@ -305,7 +305,7 @@ OPERATE_RET hci_dev_down(VOID_T)
     return OPRT_OK;
 }
 
-STATIC OPERATE_RET __hci_dev_info(struct hci_dev_info *di)
+static OPERATE_RET __hci_dev_info(struct hci_dev_info *di)
 {
     if (g_dd < 0) {
         g_dd = __hci_open_dev(HDEV);
@@ -315,7 +315,7 @@ STATIC OPERATE_RET __hci_dev_info(struct hci_dev_info *di)
         }
     }
 
-    if (ioctl(g_dd, HCIGETDEVINFO, (VOID_T *)&di)) {
+    if (ioctl(g_dd, HCIGETDEVINFO, (void *)&di)) {
         printf("Can't get device info.\n");
         return OPRT_OS_ADAPTER_COM_ERROR;
     }
@@ -323,7 +323,7 @@ STATIC OPERATE_RET __hci_dev_info(struct hci_dev_info *di)
     return OPRT_OK;
 }
 
-OPERATE_RET hci_dev_get_addr(UINT8_T *addr)
+OPERATE_RET hci_dev_get_addr(uint8_t *addr)
 {
     OPERATE_RET op_ret = OPRT_OK;
     struct hci_dev_info di;
@@ -335,11 +335,11 @@ OPERATE_RET hci_dev_get_addr(UINT8_T *addr)
     return OPRT_OK;
 }
 
-STATIC OPERATE_RET __hci_dev_read_local_version(UINT8_T *ver)
+static OPERATE_RET __hci_dev_read_local_version(uint8_t *ver)
 {
     read_local_version_rp rp;
     struct hci_request rq;
-    INT_T ret;
+    int ret;
 
     if (g_dd < 0) {
         g_dd = __hci_open_dev(HDEV);
@@ -373,7 +373,7 @@ STATIC OPERATE_RET __hci_dev_read_local_version(UINT8_T *ver)
     return OPRT_OK;
 }
 
-STATIC OPERATE_RET __hci_dev_set_scan_enable(UINT8_T enable)
+static OPERATE_RET __hci_dev_set_scan_enable(uint8_t enable)
 {
     le_set_scan_enable_cp scan_cp;
 
@@ -397,7 +397,7 @@ STATIC OPERATE_RET __hci_dev_set_scan_enable(UINT8_T enable)
     return OPRT_OK;
 }
 
-STATIC OPERATE_RET __hci_dev_set_extended_scan_enable(UINT8_T enable)
+static OPERATE_RET __hci_dev_set_extended_scan_enable(uint8_t enable)
 {
     le_set_extended_scan_enable_cp scan_cp;
 
@@ -422,7 +422,7 @@ STATIC OPERATE_RET __hci_dev_set_extended_scan_enable(UINT8_T enable)
     return OPRT_OK;
 }
 
-OPERATE_RET hci_dev_set_scan_enable(UINT8_T enable)
+OPERATE_RET hci_dev_set_scan_enable(uint8_t enable)
 {
     if (hci_version == 0xFF) {
         __hci_dev_read_local_version(&hci_version);
@@ -435,7 +435,7 @@ OPERATE_RET hci_dev_set_scan_enable(UINT8_T enable)
     }
 }
 
-STATIC OPERATE_RET __hci_dev_set_advertise_enable(UINT8_T enable)
+static OPERATE_RET __hci_dev_set_advertise_enable(uint8_t enable)
 {
     le_set_advertise_enable_cp adv_cp;
 
@@ -457,9 +457,9 @@ STATIC OPERATE_RET __hci_dev_set_advertise_enable(UINT8_T enable)
     return OPRT_OK;
 }
 
-STATIC OPERATE_RET __hci_dev_set_extended_advertise_enable(UINT8_T enable)
+static OPERATE_RET __hci_dev_set_extended_advertise_enable(uint8_t enable)
 {
-    CHAR_T buf[10]                                 = { 0 };
+    char buf[10]                                 = { 0 };
     le_set_extended_advertise_enable_cp *ad_enable = (le_set_extended_advertise_enable_cp *)buf;
     le_extended_advertising_set *set               = (le_extended_advertising_set *)(buf + LE_SET_EXTENDED_ADVERTISE_ENABLE_CP_SIZE);
 
@@ -485,7 +485,7 @@ STATIC OPERATE_RET __hci_dev_set_extended_advertise_enable(UINT8_T enable)
     return OPRT_OK;
 }
 
-OPERATE_RET hci_dev_set_advertise_enable(UINT8_T enable)
+OPERATE_RET hci_dev_set_advertise_enable(uint8_t enable)
 {
     if (hci_version == 0xFF) {
         __hci_dev_read_local_version(&hci_version);
@@ -498,7 +498,7 @@ OPERATE_RET hci_dev_set_advertise_enable(UINT8_T enable)
     }
 }
 
-STATIC OPERATE_RET __hci_dev_set_adv_parameters(TKL_BLE_GAP_ADV_PARAMS_T CONST *p_adv_params)
+static OPERATE_RET __hci_dev_set_adv_parameters(TKL_BLE_GAP_ADV_PARAMS_T const *p_adv_params)
 {
     le_set_advertising_parameters_cp adv_params_cp;
 
@@ -533,10 +533,10 @@ STATIC OPERATE_RET __hci_dev_set_adv_parameters(TKL_BLE_GAP_ADV_PARAMS_T CONST *
     return OPRT_OK;
 }
 
-STATIC OPERATE_RET __hci_dev_set_extended_adv_parameters(TKL_BLE_GAP_ADV_PARAMS_T CONST *p_adv_params)
+static OPERATE_RET __hci_dev_set_extended_adv_parameters(TKL_BLE_GAP_ADV_PARAMS_T const *p_adv_params)
 {
     le_set_extended_advertising_parameters_cp params;
-    UINT16_T itvl = 0;
+    uint16_t itvl = 0;
 
     if (g_dd < 0) {
         g_dd = __hci_open_dev(HDEV);
@@ -548,9 +548,9 @@ STATIC OPERATE_RET __hci_dev_set_extended_adv_parameters(TKL_BLE_GAP_ADV_PARAMS_
 
     memset(&params, 0, LE_SET_EXTENDED_ADVERTISING_PARAMETERS_CP_SIZE);
     itvl = BLE_ADV_ITVL_MS(p_adv_params->adv_interval_min);
-    memcpy(params.min_interval, (UINT8_T *)&itvl, 2);
+    memcpy(params.min_interval, (uint8_t *)&itvl, 2);
     itvl = BLE_ADV_ITVL_MS(p_adv_params->adv_interval_max);
-    memcpy(params.max_interval, (UINT8_T *)&itvl, 2);
+    memcpy(params.max_interval, (uint8_t *)&itvl, 2);
     params.peer_addr_type = p_adv_params->direct_addr.type;
     memcpy(params.peer_addr, p_adv_params->direct_addr.addr, 6);
     params.channel_map = p_adv_params->adv_channel_map;
@@ -576,7 +576,7 @@ STATIC OPERATE_RET __hci_dev_set_extended_adv_parameters(TKL_BLE_GAP_ADV_PARAMS_
     return OPRT_OK;
 }
 
-OPERATE_RET hci_dev_set_adv_parameters(TKL_BLE_GAP_ADV_PARAMS_T CONST *p_adv_params)
+OPERATE_RET hci_dev_set_adv_parameters(TKL_BLE_GAP_ADV_PARAMS_T const *p_adv_params)
 {
     if (hci_version == 0xFF) {
         __hci_dev_read_local_version(&hci_version);
@@ -589,7 +589,7 @@ OPERATE_RET hci_dev_set_adv_parameters(TKL_BLE_GAP_ADV_PARAMS_T CONST *p_adv_par
     }
 }
 
-STATIC OPERATE_RET __hci_dev_set_adv_data(TKL_BLE_DATA_T CONST *p_adv)
+static OPERATE_RET __hci_dev_set_adv_data(TKL_BLE_DATA_T const *p_adv)
 {
     le_set_advertising_data_cp adv_data_cp;
 
@@ -616,9 +616,9 @@ STATIC OPERATE_RET __hci_dev_set_adv_data(TKL_BLE_DATA_T CONST *p_adv)
     return OPRT_OK;
 }
 
-STATIC OPERATE_RET __hci_dev_set_extended_adv_data(TKL_BLE_DATA_T CONST *p_adv)
+static OPERATE_RET __hci_dev_set_extended_adv_data(TKL_BLE_DATA_T const *p_adv)
 {
-    CHAR_T buf[255 + 4]                              = { 0 };
+    char buf[255 + 4]                              = { 0 };
     le_set_extended_advertising_data_cp *adv_data_cp = (le_set_extended_advertising_data_cp *)buf;
 
     if (g_dd < 0) {
@@ -643,7 +643,7 @@ STATIC OPERATE_RET __hci_dev_set_extended_adv_data(TKL_BLE_DATA_T CONST *p_adv)
     return OPRT_OK;
 }
 
-OPERATE_RET hci_dev_set_adv_data(TKL_BLE_DATA_T CONST *p_adv)
+OPERATE_RET hci_dev_set_adv_data(TKL_BLE_DATA_T const *p_adv)
 {
     if (hci_version == 0xFF) {
         __hci_dev_read_local_version(&hci_version);
@@ -656,7 +656,7 @@ OPERATE_RET hci_dev_set_adv_data(TKL_BLE_DATA_T CONST *p_adv)
     }
 }
 
-STATIC OPERATE_RET __hci_dev_set_scan_parameters(TKL_BLE_GAP_SCAN_PARAMS_T CONST *p_scan_params)
+static OPERATE_RET __hci_dev_set_scan_parameters(TKL_BLE_GAP_SCAN_PARAMS_T const *p_scan_params)
 {
     le_set_scan_parameters_cp param_cp;
 
@@ -681,9 +681,9 @@ STATIC OPERATE_RET __hci_dev_set_scan_parameters(TKL_BLE_GAP_SCAN_PARAMS_T CONST
     return OPRT_OK;
 }
 
-STATIC OPERATE_RET __hci_dev_set_extended_scan_parameters(TKL_BLE_GAP_SCAN_PARAMS_T CONST *p_scan_params)
+static OPERATE_RET __hci_dev_set_extended_scan_parameters(TKL_BLE_GAP_SCAN_PARAMS_T const *p_scan_params)
 {
-    CHAR_T buf[10]                                  = { 0 };
+    char buf[10]                                  = { 0 };
     le_set_extended_scan_parameters_cp *scan_params = (le_set_extended_scan_parameters_cp *)buf;
     le_set_extended_scan_phy_info *phy_info         = (le_set_extended_scan_phy_info *)(buf + LE_SET_EXTENDED_SCAN_PARAMETERS_CP_SIZE);
 
@@ -710,7 +710,7 @@ STATIC OPERATE_RET __hci_dev_set_extended_scan_parameters(TKL_BLE_GAP_SCAN_PARAM
     return OPRT_OK;
 }
 
-OPERATE_RET hci_dev_set_scan_parameters(TKL_BLE_GAP_SCAN_PARAMS_T CONST *p_scan_params)
+OPERATE_RET hci_dev_set_scan_parameters(TKL_BLE_GAP_SCAN_PARAMS_T const *p_scan_params)
 {
     if (hci_version == 0xFF) {
         __hci_dev_read_local_version(&hci_version);
@@ -723,7 +723,7 @@ OPERATE_RET hci_dev_set_scan_parameters(TKL_BLE_GAP_SCAN_PARAMS_T CONST *p_scan_
     }
 }
 
-STATIC OPERATE_RET __hci_dev_set_scan_rsp_data(TKL_BLE_DATA_T CONST *p_scan_rsp)
+static OPERATE_RET __hci_dev_set_scan_rsp_data(TKL_BLE_DATA_T const *p_scan_rsp)
 {
     le_set_scan_response_data_cp scan_rsp_cp;
 
@@ -750,9 +750,9 @@ STATIC OPERATE_RET __hci_dev_set_scan_rsp_data(TKL_BLE_DATA_T CONST *p_scan_rsp)
     return OPRT_OK;
 }
 
-STATIC OPERATE_RET __hci_dev_set_extended_scan_rsp_data(TKL_BLE_DATA_T CONST *p_scan_rsp)
+static OPERATE_RET __hci_dev_set_extended_scan_rsp_data(TKL_BLE_DATA_T const *p_scan_rsp)
 {
-    CHAR_T buf[255 + 4]                                = { 0 };
+    char buf[255 + 4]                                = { 0 };
     le_set_extended_scan_response_data_cp *scan_rsp_cp = (le_set_extended_scan_response_data_cp *)buf;
 
     if (g_dd < 0) {
@@ -777,7 +777,7 @@ STATIC OPERATE_RET __hci_dev_set_extended_scan_rsp_data(TKL_BLE_DATA_T CONST *p_
     return OPRT_OK;
 }
 
-OPERATE_RET hci_dev_set_scan_rsp_data(TKL_BLE_DATA_T CONST *p_scan_rsp)
+OPERATE_RET hci_dev_set_scan_rsp_data(TKL_BLE_DATA_T const *p_scan_rsp)
 {
     if (hci_version == 0xFF) {
         __hci_dev_read_local_version(&hci_version);
@@ -790,7 +790,7 @@ OPERATE_RET hci_dev_set_scan_rsp_data(TKL_BLE_DATA_T CONST *p_scan_rsp)
     }
 }
 
-STATIC OPERATE_RET __hci_dev_create_conn(TKL_BLE_GAP_ADDR_T CONST *p_peer_addr, TKL_BLE_GAP_SCAN_PARAMS_T CONST *p_scan_params, TKL_BLE_GAP_CONN_PARAMS_T CONST *p_conn_params)
+static OPERATE_RET __hci_dev_create_conn(TKL_BLE_GAP_ADDR_T const *p_peer_addr, TKL_BLE_GAP_SCAN_PARAMS_T const *p_scan_params, TKL_BLE_GAP_CONN_PARAMS_T const *p_conn_params)
 {
     le_create_connection_cp create_conn_cp;
 
@@ -823,9 +823,9 @@ STATIC OPERATE_RET __hci_dev_create_conn(TKL_BLE_GAP_ADDR_T CONST *p_peer_addr, 
     return OPRT_OK;
 }
 
-STATIC OPERATE_RET __hci_dev_extended_create_conn(TKL_BLE_GAP_ADDR_T CONST *p_peer_addr, TKL_BLE_GAP_SCAN_PARAMS_T CONST *p_scan_params, TKL_BLE_GAP_CONN_PARAMS_T CONST *p_conn_params)
+static OPERATE_RET __hci_dev_extended_create_conn(TKL_BLE_GAP_ADDR_T const *p_peer_addr, TKL_BLE_GAP_SCAN_PARAMS_T const *p_scan_params, TKL_BLE_GAP_CONN_PARAMS_T const *p_conn_params)
 {
-    UINT8_T buf[30]                                  = { 0 };
+    uint8_t buf[30]                                  = { 0 };
     le_extended_create_connection_cp *create_conn_cp = (le_extended_create_connection_cp *)buf;
     le_extended_create_conn_phy *conn_phy            = (le_extended_create_conn_phy *)(buf + LE_EXTENDED_CREATE_CONN_CP_SIZE);
 
@@ -859,7 +859,7 @@ STATIC OPERATE_RET __hci_dev_extended_create_conn(TKL_BLE_GAP_ADDR_T CONST *p_pe
     return OPRT_OK;
 }
 
-OPERATE_RET hci_dev_create_conn(TKL_BLE_GAP_ADDR_T CONST *p_peer_addr, TKL_BLE_GAP_SCAN_PARAMS_T CONST *p_scan_params, TKL_BLE_GAP_CONN_PARAMS_T CONST *p_conn_params)
+OPERATE_RET hci_dev_create_conn(TKL_BLE_GAP_ADDR_T const *p_peer_addr, TKL_BLE_GAP_SCAN_PARAMS_T const *p_scan_params, TKL_BLE_GAP_CONN_PARAMS_T const *p_conn_params)
 {
     if (hci_version == 0xFF) {
         __hci_dev_read_local_version(&hci_version);
@@ -872,7 +872,7 @@ OPERATE_RET hci_dev_create_conn(TKL_BLE_GAP_ADDR_T CONST *p_peer_addr, TKL_BLE_G
     }
 }
 
-OPERATE_RET hci_dev_disconnect(UINT16_T conn_handle, UINT8_T hci_reason)
+OPERATE_RET hci_dev_disconnect(uint16_t conn_handle, uint8_t hci_reason)
 {
     disconnect_cp cp;
 
@@ -895,7 +895,7 @@ OPERATE_RET hci_dev_disconnect(UINT16_T conn_handle, UINT8_T hci_reason)
     return OPRT_OK;
 }
 
-OPERATE_RET hci_dev_conn_update(UINT16_T conn_handle, TKL_BLE_GAP_CONN_PARAMS_T CONST *p_conn_params)
+OPERATE_RET hci_dev_conn_update(uint16_t conn_handle, TKL_BLE_GAP_CONN_PARAMS_T const *p_conn_params)
 {
     le_connection_update_cp cp;
 
@@ -923,11 +923,11 @@ OPERATE_RET hci_dev_conn_update(UINT16_T conn_handle, TKL_BLE_GAP_CONN_PARAMS_T 
     return OPRT_OK;
 }
 
-OPERATE_RET hci_dev_read_rssi(UINT16_T handle)
+OPERATE_RET hci_dev_read_rssi(uint16_t handle)
 {
     read_rssi_rp rp;
     struct hci_request rq;
-    INT_T ret;
+    int ret;
 
     if (g_dd < 0) {
         g_dd = __hci_open_dev(HDEV);
@@ -945,7 +945,7 @@ OPERATE_RET hci_dev_read_rssi(UINT16_T handle)
     return OPRT_OK;
 }
 
-STATIC VOID_T __hci_evt_callback(TKL_BLE_GAP_EVT_TYPE_E type, INT_T result)
+static void __hci_evt_callback(TKL_BLE_GAP_EVT_TYPE_E type, int result)
 {
     TKL_BLE_GAP_PARAMS_EVT_T init_event;
 
@@ -956,7 +956,7 @@ STATIC VOID_T __hci_evt_callback(TKL_BLE_GAP_EVT_TYPE_E type, INT_T result)
     }
 }
 
-STATIC VOID_T __le_conn_complete_evt(VOID_T *data, UINT8_T size)
+static void __le_conn_complete_evt(void *data, uint8_t size)
 {
     evt_le_connection_complete *evt = data;
     TKL_BLE_GAP_PARAMS_EVT_T conn_evt;
@@ -971,11 +971,11 @@ STATIC VOID_T __le_conn_complete_evt(VOID_T *data, UINT8_T size)
     }
 }
 
-STATIC VOID_T __le_adv_report_evt(VOID_T *data, UINT8_T size)
+static void __le_adv_report_evt(void *data, uint8_t size)
 {
     le_advertising_info *evt = data;
     TKL_BLE_GAP_PARAMS_EVT_T adv_evt;
-    UINT8_T evt_len;
+    uint8_t evt_len;
 
     adv_evt.type        = TKL_BLE_GAP_EVT_ADV_REPORT;
     adv_evt.result      = 0;
@@ -997,7 +997,7 @@ STATIC VOID_T __le_adv_report_evt(VOID_T *data, UINT8_T size)
     }
 }
 
-STATIC VOID_T __le_conn_update_complete_evt(VOID_T *data, UINT8_T size)
+static void __le_conn_update_complete_evt(void *data, uint8_t size)
 {
     evt_le_connection_update_complete *evt = data;
     TKL_BLE_GAP_PARAMS_EVT_T conn_update_evt;
@@ -1015,7 +1015,7 @@ STATIC VOID_T __le_conn_update_complete_evt(VOID_T *data, UINT8_T size)
     }
 }
 
-STATIC VOID_T __le_enhanced_conn_complete_evt(VOID_T *data, UINT8_T size)
+static void __le_enhanced_conn_complete_evt(void *data, uint8_t size)
 {
     evt_le_enhanced_conn_complete *evt = data;
     TKL_BLE_GAP_PARAMS_EVT_T conn_evt;
@@ -1030,7 +1030,7 @@ STATIC VOID_T __le_enhanced_conn_complete_evt(VOID_T *data, UINT8_T size)
     }
 }
 
-STATIC VOID_T __le_ext_adv_report_evt(VOID_T *data, UINT8_T size)
+static void __le_ext_adv_report_evt(void *data, uint8_t size)
 {
     evt_le_ext_advertising_info *evt = data;
     le_ext_advertising_info *report;
@@ -1038,7 +1038,7 @@ STATIC VOID_T __le_ext_adv_report_evt(VOID_T *data, UINT8_T size)
 
     data += sizeof(evt->num_reports);
 
-    for (INT_T i = 0; i < evt->num_reports; ++i) {
+    for (int i = 0; i < evt->num_reports; ++i) {
         report              = data;
         adv_evt.type        = TKL_BLE_GAP_EVT_ADV_REPORT;
         adv_evt.result      = 0;
@@ -1066,12 +1066,12 @@ STATIC VOID_T __le_ext_adv_report_evt(VOID_T *data, UINT8_T size)
 }
 
 struct subevent_data {
-    UINT8_T subevent;
-    CONST CHAR_T *str;
-    VOID_T (*func) (VOID_T *data, UINT8_T size);
+    uint8_t subevent;
+    const char *str;
+    void (*func) (void *data, uint8_t size);
 };
 
-STATIC CONST struct subevent_data le_meta_event_table[] = {
+static const struct subevent_data le_meta_event_table[] = {
     { EVT_LE_CONN_COMPLETE, "LE Connection Complete", __le_conn_complete_evt },
     { EVT_LE_ADVERTISING_REPORT, "LE Advertising Report", __le_adv_report_evt },
     { EVT_LE_CONN_UPDATE_COMPLETE, "LE Connection Update Complete", __le_conn_update_complete_evt },
@@ -1080,7 +1080,7 @@ STATIC CONST struct subevent_data le_meta_event_table[] = {
     {}
 };
 
-STATIC VOID_T __disconnect_complete_evt(VOID_T *data, UINT8_T size)
+static void __disconnect_complete_evt(void *data, uint8_t size)
 {
     evt_disconn_complete *evt = data;
     TKL_BLE_GAP_PARAMS_EVT_T disc_evt;
@@ -1096,7 +1096,7 @@ STATIC VOID_T __disconnect_complete_evt(VOID_T *data, UINT8_T size)
     }
 }
 
-STATIC VOID_T __cmd_complete_evt(VOID_T *data, UINT8_T size)
+static void __cmd_complete_evt(void *data, uint8_t size)
 {
     evt_cmd_complete *evt = data;
 
@@ -1114,11 +1114,11 @@ STATIC VOID_T __cmd_complete_evt(VOID_T *data, UINT8_T size)
     }
 }
 
-STATIC VOID_T __le_meta_event_evt(VOID_T *data, UINT8_T size)
+static void __le_meta_event_evt(void *data, uint8_t size)
 {
-    UINT8_T subevent = *((UINT8_T *)data);
+    uint8_t subevent = *((uint8_t *)data);
 
-    for (INT_T i = 0; le_meta_event_table[i].str; i++) {
+    for (int i = 0; le_meta_event_table[i].str; i++) {
         if (le_meta_event_table[i].subevent == subevent) {
             le_meta_event_table[i].func(data + 1, size - 1);
             break;
@@ -1127,19 +1127,19 @@ STATIC VOID_T __le_meta_event_evt(VOID_T *data, UINT8_T size)
 }
 
 struct event_data {
-    UINT8_T event;
-    CONST CHAR_T *str;
-    VOID_T (*func) (VOID_T *data, UINT8_T size);
+    uint8_t event;
+    const char *str;
+    void (*func) (void *data, uint8_t size);
 };
 
-STATIC CONST struct event_data event_table[] = {
+static const struct event_data event_table[] = {
     { EVT_DISCONN_COMPLETE, "Disconnect Complete", __disconnect_complete_evt },
     { EVT_CMD_COMPLETE, "Command Complete", __cmd_complete_evt },
     { EVT_LE_META_EVENT, "LE Meta Event", __le_meta_event_evt },
     {}
 };
 
-STATIC VOID_T __hci_evt_handler(UCHAR_T *data, UINT_T len)
+static void __hci_evt_handler(uint8_t *data, uint32_t len)
 {
     hci_event_hdr *hdr = (hci_event_hdr *)data;
 
@@ -1150,7 +1150,7 @@ STATIC VOID_T __hci_evt_handler(UCHAR_T *data, UINT_T len)
     data += HCI_EVENT_HDR_SIZE;
     len -= HCI_EVENT_HDR_SIZE;
 
-    for (INT_T i = 0; event_table[i].str; i++) {
+    for (int i = 0; event_table[i].str; i++) {
         if (event_table[i].event == hdr->evt) {
             event_table[i].func(data, hdr->plen);
             break;
@@ -1158,9 +1158,9 @@ STATIC VOID_T __hci_evt_handler(UCHAR_T *data, UINT_T len)
     }
 }
 
-STATIC VOID_T *__hci_task(VOID_T *arg)
+static void *__hci_task(void *arg)
 {
-    UCHAR_T buf[HCI_MAX_FRAME_SIZE];
+    uint8_t buf[HCI_MAX_FRAME_SIZE];
     SIZE_T len;
 
     while (1) {
@@ -1189,7 +1189,7 @@ STATIC VOID_T *__hci_task(VOID_T *arg)
     return NULL;
 }
 
-OPERATE_RET hci_dev_gap_callback_register(CONST TKL_BLE_GAP_EVT_FUNC_CB gap_evt)
+OPERATE_RET hci_dev_gap_callback_register(const TKL_BLE_GAP_EVT_FUNC_CB gap_evt)
 {
     g_gap_evt_cb = gap_evt;
     pthread_create(&hci_task_thId, NULL, __hci_task, NULL);

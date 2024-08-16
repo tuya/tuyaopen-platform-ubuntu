@@ -30,19 +30,19 @@ typedef struct
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_semaphore_create_init(TKL_SEM_HANDLE *handle, CONST UINT_T sem_cnt, CONST UINT_T sem_max)
+TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_semaphore_create_init(TKL_SEM_HANDLE *handle, const uint32_t sem_cnt, const uint32_t sem_max)
 {
     if(!handle) {
         return OPRT_INVALID_PARM;
     }
 
     P_TKL_SEM_MANAGE sem_manage; 
-    sem_manage = (P_TKL_SEM_MANAGE)tkl_system_malloc(SIZEOF(TKL_SEM_MANAGE));
+    sem_manage = (P_TKL_SEM_MANAGE)tkl_system_malloc(sizeof(TKL_SEM_MANAGE));
     if (sem_manage == NULL) {
         return OPRT_MALLOC_FAILED;
     }
 
-    INT_T ret;
+    int ret;
     ret = sem_init(&sem_manage->sem, 0, sem_cnt);
     if(ret != 0) {
         tkl_system_free(sem_manage);
@@ -64,7 +64,7 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_semaphore_create_init(TKL_SEM_HANDLE *handle
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_semaphore_wait(CONST TKL_SEM_HANDLE handle, CONST UINT_T timeout)
+TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_semaphore_wait(const TKL_SEM_HANDLE handle, const uint32_t timeout)
 {
     if(!handle) {
         return OPRT_INVALID_PARM;
@@ -73,7 +73,7 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_semaphore_wait(CONST TKL_SEM_HANDLE handle, 
     P_TKL_SEM_MANAGE sem_manage;
     sem_manage = (P_TKL_SEM_MANAGE)handle;
 
-    INT_T ret;
+    int ret;
     if (timeout == TKL_SEM_WAIT_FOREVER) {
         ret = sem_wait(&sem_manage->sem);
     } else {
@@ -109,7 +109,7 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_semaphore_wait(CONST TKL_SEM_HANDLE handle, 
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_semaphore_post(CONST TKL_SEM_HANDLE handle)
+TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_semaphore_post(const TKL_SEM_HANDLE handle)
 {
     if(!handle) {
         return OPRT_INVALID_PARM;
@@ -118,7 +118,7 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_semaphore_post(CONST TKL_SEM_HANDLE handle)
     P_TKL_SEM_MANAGE sem_manage;
     sem_manage = (P_TKL_SEM_MANAGE)handle;
 
-    INT_T ret;
+    int ret;
     ret= sem_post(&(sem_manage->sem));
     if(ret != 0) {
         return OPRT_OS_ADAPTER_SEM_POST_FAILED;
@@ -136,7 +136,7 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_semaphore_post(CONST TKL_SEM_HANDLE handle)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_semaphore_release(CONST TKL_SEM_HANDLE handle)
+TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_semaphore_release(const TKL_SEM_HANDLE handle)
 {
     if(!handle) {
         return OPRT_INVALID_PARM;
@@ -145,7 +145,7 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_semaphore_release(CONST TKL_SEM_HANDLE handl
     P_TKL_SEM_MANAGE sem_manage;
     sem_manage = (P_TKL_SEM_MANAGE)handle;
 
-    INT_T ret;
+    int ret;
     ret= sem_destroy(&(sem_manage->sem));
     tkl_system_free(handle); // 释放信号量管理结构
     if(ret != 0) {

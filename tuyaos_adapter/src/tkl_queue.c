@@ -15,17 +15,17 @@
 #include <string.h>
 
 typedef struct rpa_queue_t {
-    VOID_T **data;
-    volatile UINT32_T nelts; /**< # elements */
-    UINT32_T in;             /**< next empty location */
-    UINT32_T out;            /**< next filled location */
-    UINT32_T bounds;         /**< max size of queue */
-    UINT32_T full_waiters;
-    UINT32_T empty_waiters;
+    void **data;
+    volatile uint32_t nelts; /**< # elements */
+    uint32_t in;             /**< next empty location */
+    uint32_t out;            /**< next filled location */
+    uint32_t bounds;         /**< max size of queue */
+    uint32_t full_waiters;
+    uint32_t empty_waiters;
     pthread_mutex_t *one_big_mutex;
     pthread_cond_t *not_empty;
     pthread_cond_t *not_full;
-    INT_T terminated;
+    int terminated;
 } rpa_queue_t;
 
 #define RPA_WAIT_NONE    0
@@ -34,7 +34,7 @@ typedef struct rpa_queue_t {
 #define rpa_queue_full(queue)  ((queue)->nelts == (queue)->bounds)
 #define rpa_queue_empty(queue) ((queue)->nelts == 0)
 
-STATIC VOID_T set_timeout(struct timespec *abstime, INT_T wait_ms)
+static void set_timeout(struct timespec *abstime, int wait_ms)
 {
     clock_gettime(CLOCK_REALTIME, abstime);
     /* add seconds */
@@ -49,7 +49,7 @@ STATIC VOID_T set_timeout(struct timespec *abstime, INT_T wait_ms)
     abstime->tv_nsec = ms * 1000000L;
 }
 
-STATIC VOID_T rpa_queue_destroy(rpa_queue_t *queue)
+static void rpa_queue_destroy(rpa_queue_t *queue)
 {
     /* Ignore errors here, we can't do anything about them anyway. */
     pthread_cond_destroy(queue->not_empty);
@@ -57,7 +57,7 @@ STATIC VOID_T rpa_queue_destroy(rpa_queue_t *queue)
     pthread_mutex_destroy(queue->one_big_mutex);
 }
 
-STATIC BOOL_T rpa_queue_create(rpa_queue_t **q, UINT32_T queue_capacity)
+static BOOL_T rpa_queue_create(rpa_queue_t **q, uint32_t queue_capacity)
 {
     rpa_queue_t *queue;
     queue = malloc(sizeof(rpa_queue_t));
@@ -77,7 +77,7 @@ STATIC BOOL_T rpa_queue_create(rpa_queue_t **q, UINT32_T queue_capacity)
     pthread_mutexattr_t attr;
     pthread_mutexattr_init(&attr);
     pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
-    INT_T rv = pthread_mutex_init(queue->one_big_mutex, &attr);
+    int rv = pthread_mutex_init(queue->one_big_mutex, &attr);
     if (rv != 0) {
         goto error;
     }
@@ -93,7 +93,7 @@ STATIC BOOL_T rpa_queue_create(rpa_queue_t **q, UINT32_T queue_capacity)
     }
 
     /* Set all the data in the queue to NULL */
-    queue->data          = malloc(queue_capacity * sizeof(VOID_T *));
+    queue->data          = malloc(queue_capacity * sizeof(void *));
     queue->bounds        = queue_capacity;
     queue->nelts         = 0;
     queue->in            = 0;
@@ -109,7 +109,7 @@ error:
     return false;
 }
 
-STATIC BOOL_T rpa_queue_trypush(rpa_queue_t *queue, VOID_T *data)
+static BOOL_T rpa_queue_trypush(rpa_queue_t *queue, void *data)
 {
     BOOL_T rv;
 
@@ -146,7 +146,7 @@ STATIC BOOL_T rpa_queue_trypush(rpa_queue_t *queue, VOID_T *data)
     return true;
 }
 
-STATIC BOOL_T rpa_queue_timedpush(rpa_queue_t *queue, VOID_T *data, INT_T wait_ms)
+static BOOL_T rpa_queue_timedpush(rpa_queue_t *queue, void *data, int wait_ms)
 {
     BOOL_T rv;
 
@@ -212,7 +212,7 @@ STATIC BOOL_T rpa_queue_timedpush(rpa_queue_t *queue, VOID_T *data, INT_T wait_m
     return true;
 }
 
-STATIC BOOL_T rpa_queue_trypop(rpa_queue_t *queue, VOID_T **data)
+static BOOL_T rpa_queue_trypop(rpa_queue_t *queue, void **data)
 {
     BOOL_T rv;
 
@@ -249,7 +249,7 @@ STATIC BOOL_T rpa_queue_trypop(rpa_queue_t *queue, VOID_T **data)
     return true;
 }
 
-STATIC BOOL_T rpa_queue_timedpop(rpa_queue_t *queue, VOID_T **data, INT_T wait_ms)
+static BOOL_T rpa_queue_timedpop(rpa_queue_t *queue, void **data, int wait_ms)
 {
     BOOL_T rv;
 
@@ -318,7 +318,7 @@ STATIC BOOL_T rpa_queue_timedpop(rpa_queue_t *queue, VOID_T **data, INT_T wait_m
 
 typedef struct {
     rpa_queue_t *queue;
-    INT_T msgsize;
+    int msgsize;
 } TKL_QUEUE_T;
 
 /**
@@ -330,7 +330,7 @@ typedef struct {
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_queue_create_init(TKL_QUEUE_HANDLE *handle, INT_T msgsize, INT_T msgcount)
+TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_queue_create_init(TKL_QUEUE_HANDLE *handle, int msgsize, int msgcount)
 {
     TKL_QUEUE_T *queue = NULL;
 
@@ -338,7 +338,7 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_queue_create_init(TKL_QUEUE_HANDLE *handle, 
         return OPRT_INVALID_PARM;
     }
 
-    queue = (TKL_QUEUE_T *)malloc(SIZEOF(TKL_QUEUE_T));
+    queue = (TKL_QUEUE_T *)malloc(sizeof(TKL_QUEUE_T));
     if (!queue) {
         return OPRT_MALLOC_FAILED;
     }
@@ -362,21 +362,21 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_queue_create_init(TKL_QUEUE_HANDLE *handle, 
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_queue_post(CONST TKL_QUEUE_HANDLE handle, VOID_T *data, UINT_T timeout)
+TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_queue_post(const TKL_QUEUE_HANDLE handle, void *data, uint32_t timeout)
 {
     if (NULL == handle || NULL == data) {
         return OPRT_INVALID_PARM;
     }
 
     TKL_QUEUE_T *queue = (TKL_QUEUE_T *)handle;
-    INT_T wait_ms      = 0;
+    int wait_ms      = 0;
 
-    VOID_T *buf = (VOID_T *)malloc(queue->msgsize);
+    void *buf = (void *)malloc(queue->msgsize);
     if (NULL == buf) {
         return OPRT_MALLOC_FAILED;
     }
 
-    memcpy(buf, (VOID_T *)data, queue->msgsize);
+    memcpy(buf, (void *)data, queue->msgsize);
 
     if (timeout == TKL_QUEUE_WAIT_FROEVER) {
         wait_ms = RPA_WAIT_FOREVER;
@@ -400,15 +400,15 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_queue_post(CONST TKL_QUEUE_HANDLE handle, VO
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_queue_fetch(CONST TKL_QUEUE_HANDLE handle, VOID_T *msg, UINT_T timeout)
+TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_queue_fetch(const TKL_QUEUE_HANDLE handle, void *msg, uint32_t timeout)
 {
     if (NULL == handle) {
         return OPRT_INVALID_PARM;
     }
 
     TKL_QUEUE_T *queue = (TKL_QUEUE_T *)handle;
-    VOID_T *buf        = NULL;
-    INT_T wait_ms;
+    void *buf        = NULL;
+    int wait_ms;
 
     if (timeout == TKL_QUEUE_WAIT_FROEVER) {
         wait_ms = RPA_WAIT_FOREVER;
@@ -416,12 +416,12 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_queue_fetch(CONST TKL_QUEUE_HANDLE handle, V
         wait_ms = timeout;
     }
 
-    if (!rpa_queue_timedpop(queue->queue, (VOID_T **)&buf, wait_ms)) {
+    if (!rpa_queue_timedpop(queue->queue, (void **)&buf, wait_ms)) {
         return OPRT_OS_ADAPTER_QUEUE_RECV_FAIL;
     }
 
     if (buf) {
-        memcpy((VOID_T *)msg, buf, queue->msgsize);
+        memcpy((void *)msg, buf, queue->msgsize);
         free(buf);
     }
 
@@ -433,9 +433,9 @@ TUYA_WEAK_ATTRIBUTE OPERATE_RET tkl_queue_fetch(CONST TKL_QUEUE_HANDLE handle, V
  *
  * @param[in] queue the message queue handle
  *
- * @return VOID_T
+ * @return void
  */
-TUYA_WEAK_ATTRIBUTE VOID_T tkl_queue_free(CONST TKL_QUEUE_HANDLE handle)
+TUYA_WEAK_ATTRIBUTE void tkl_queue_free(const TKL_QUEUE_HANDLE handle)
 {
     if (NULL == handle) {
         return;

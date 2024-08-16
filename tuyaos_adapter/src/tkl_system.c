@@ -18,17 +18,17 @@
 /**
 * @brief Get system ticket count
 *
-* @param VOID
+* @param void
 *
 * @note This API is used to get system ticket count.
 *
 * @return system ticket count
 */
-TUYA_WEAK_ATTRIBUTE SYS_TICK_T tkl_system_get_tick_count(VOID_T)
+TUYA_WEAK_ATTRIBUTE SYS_TICK_T tkl_system_get_tick_count(void)
 {
     struct timespec time1 = {0, 0};
     clock_gettime(CLOCK_MONOTONIC, &time1);
-    return 1000*((ULONG_T)time1.tv_sec) + ((ULONG_T)time1.tv_nsec)/1000000;
+    return 1000*((uint64_t)time1.tv_sec) + ((uint64_t)time1.tv_nsec)/1000000;
 }
 
 /**
@@ -38,11 +38,11 @@ TUYA_WEAK_ATTRIBUTE SYS_TICK_T tkl_system_get_tick_count(VOID_T)
 *
 * @return system millisecond
 */
-TUYA_WEAK_ATTRIBUTE SYS_TIME_T tkl_system_get_millisecond(VOID_T)
+TUYA_WEAK_ATTRIBUTE SYS_TIME_T tkl_system_get_millisecond(void)
 {
     struct timespec time1 = {0, 0};
     clock_gettime(CLOCK_MONOTONIC, &time1);
-    return 1000*((ULONG_T)time1.tv_sec) + ((ULONG_T)time1.tv_nsec)/1000000;
+    return 1000*((uint64_t)time1.tv_sec) + ((uint64_t)time1.tv_nsec)/1000000;
 }
 
 /**
@@ -52,9 +52,9 @@ TUYA_WEAK_ATTRIBUTE SYS_TIME_T tkl_system_get_millisecond(VOID_T)
 *
 * @note This API is used for system sleep.
 *
-* @return VOID
+* @return void
 */
-TUYA_WEAK_ATTRIBUTE VOID_T tkl_system_sleep(CONST UINT_T num_ms)
+TUYA_WEAK_ATTRIBUTE void tkl_system_sleep(const uint32_t num_ms)
 {
     TIME_S sTmpTime;
     TIME_MS msTmpTime;
@@ -74,13 +74,13 @@ TUYA_WEAK_ATTRIBUTE VOID_T tkl_system_sleep(CONST UINT_T num_ms)
 /**
 * @brief System reset
 *
-* @param VOID
+* @param void
 *
 * @note This API is used for system reset.
 *
-* @return VOID
+* @return void
 */
-TUYA_WEAK_ATTRIBUTE VOID_T tkl_system_reset(VOID_T)
+TUYA_WEAK_ATTRIBUTE void tkl_system_reset(void)
 {
     printf("Rev Restart Req\r\n");
     exit(0);
@@ -90,13 +90,13 @@ TUYA_WEAK_ATTRIBUTE VOID_T tkl_system_reset(VOID_T)
 /**
 * @brief Get system reset reason
 *
-* @param VOID
+* @param void
 *
 * @note This API is used for getting system reset reason.
 *
 * @return reset reason of system
 */
-TUYA_RESET_REASON_E tkl_system_get_reset_reason(CHAR_T** describe)
+TUYA_RESET_REASON_E tkl_system_get_reset_reason(char** describe)
 {
     return TUYA_RESET_REASON_UNKNOWN;
 }
@@ -110,7 +110,7 @@ TUYA_RESET_REASON_E tkl_system_get_reset_reason(CHAR_T** describe)
 *
 * @return a random number in the specified range
 */
-TUYA_WEAK_ATTRIBUTE INT_T tkl_system_get_random(CONST UINT_T range)
+TUYA_WEAK_ATTRIBUTE int tkl_system_get_random(const uint32_t range)
 {
     return rand() % range;
 }
@@ -131,7 +131,7 @@ OPERATE_RET tkl_cpu_sleep_mode_set(BOOL_T enable, TUYA_CPU_SLEEP_MODE_E mode)
 }
 
 
-OPERATE_RET tkl_system_get_cpu_info(TUYA_CPU_INFO_T **cpu_ary, INT_T *cpu_cnt)
+OPERATE_RET tkl_system_get_cpu_info(TUYA_CPU_INFO_T **cpu_ary, int *cpu_cnt)
 {
     return OPRT_NOT_FOUND;
 }

@@ -30,7 +30,7 @@ typedef enum {
  *
  * @param[out]       is_up         the wired link status is up or not
  */
-typedef VOID_T (*TKL_WIRED_STATUS_CHANGE_CB)(TKL_WIRED_STAT_E status);
+typedef void (*TKL_WIRED_STATUS_CHANGE_CB)(TKL_WIRED_STAT_E status);
 
 
 /**
@@ -50,6 +50,16 @@ OPERATE_RET tkl_wired_get_status(TKL_WIRED_STAT_E *status);
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
 OPERATE_RET tkl_wired_set_status_cb(TKL_WIRED_STATUS_CHANGE_CB cb);
+
+/**
+ * @brief  set the ip address of the wired link
+ *
+ * @param[in]   ip: the ip address
+ *
+ * @return OPRT_OK on success. Others on error, please refer to
+ * tuya_error_code.h
+ */
+OPERATE_RET tkl_wired_set_ip(NW_IP_S *ip);
 
 /**
  * @brief  get the ip address of the wired link
@@ -76,7 +86,7 @@ OPERATE_RET tkl_wired_get_mac(NW_MAC_S *mac);
  *
  * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
  */
-OPERATE_RET tkl_wired_set_mac(CONST NW_MAC_S *mac);
+OPERATE_RET tkl_wired_set_mac(const NW_MAC_S *mac);
 
 
 #ifdef __cplusplus

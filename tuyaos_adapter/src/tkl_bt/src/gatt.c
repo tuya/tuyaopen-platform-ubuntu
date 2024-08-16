@@ -49,68 +49,68 @@
 #define LOCAL_SERVICES_NUM           3
 #define LOCAL_CHRCS_NUM              6
 typedef struct {
-    CHAR_T *path;
-    CHAR_T *uuid;
-    BYTE_T *data;
+    char *path;
+    char *uuid;
+    int8_t *data;
     SIZE_T data_len;
-    CHAR_T **flags;
+    char **flags;
     SLIST_HEAD node;
 } chrc_t;
 typedef struct {
-    CHAR_T *path;
-    CHAR_T *uuid;
-    INT_T primary;
+    char *path;
+    char *uuid;
+    int primary;
     SLIST_HEAD chrcs;
     SLIST_HEAD node;
 } service_t;
 typedef struct {
-    CHAR_T *path;
-    CHAR_T *address;
-    CHAR_T *name;
-    INT16_T rssi;
-    INT_T connected;
+    char *path;
+    char *address;
+    char *name;
+    int16_t rssi;
+    int connected;
     SLIST_HEAD services;
     SLIST_HEAD node;
 } device_t;
 
 typedef struct {
-    CHAR_T svc_path[SERVICE_CHRC_PATH_MAX_LENGTH];
-    CHAR_T path[SERVICE_CHRC_PATH_MAX_LENGTH];
+    char svc_path[SERVICE_CHRC_PATH_MAX_LENGTH];
+    char path[SERVICE_CHRC_PATH_MAX_LENGTH];
     TKL_BLE_CHAR_PARAMS_T *para;
     BOOL_T notifying;
-    BYTE_T data[512];
+    int8_t data[512];
     SIZE_T data_len;
 } local_chrc_t;
 
 typedef struct local_service_t {
-    CHAR_T path[SERVICE_CHRC_PATH_MAX_LENGTH];
-    USHORT_T handle;
+    char path[SERVICE_CHRC_PATH_MAX_LENGTH];
+    uint16_t handle;
     TKL_BLE_UUID_T svc_uuid;
     TKL_BLE_SERVICE_TYPE_E type;
     local_chrc_t chrcs[LOCAL_CHRCS_NUM];
 } local_service_t;
 
-CHAR_T *BLUEZ_DEVICE_PATH = "/org/bluez/hci0";
+char *BLUEZ_DEVICE_PATH = "/org/bluez/hci0";
 
-STATIC sd_bus *bus = NULL;
-STATIC pthread_t bus_task_thId;
+static sd_bus *bus = NULL;
+static pthread_t bus_task_thId;
 
-STATIC pthread_t gatt_evt_task_thId;
-STATIC TKL_BLE_GATT_EVT_FUNC_CB g_gatt_evt_cb = NULL;
+static pthread_t gatt_evt_task_thId;
+static TKL_BLE_GATT_EVT_FUNC_CB g_gatt_evt_cb = NULL;
 
-STATIC TKL_MUTEX_HANDLE ble_devices_mutex;
-STATIC BOOL_T is_service_add                              = FALSE;
-STATIC local_service_t local_services[LOCAL_SERVICES_NUM] = { 0 };
-STATIC SLIST_HEAD(ble_devices);
-STATIC UINT_T ble_connected_device_num = 0;
+static TKL_MUTEX_HANDLE ble_devices_mutex;
+static BOOL_T is_service_add                              = FALSE;
+static local_service_t local_services[LOCAL_SERVICES_NUM] = { 0 };
+static SLIST_HEAD(ble_devices);
+static uint32_t ble_connected_device_num = 0;
 
-STATIC CHAR_T *write_chrc_flag[]  = { CHRC_FLAGS_WRITE, CHRC_FLAGS_WRITE_WITHOUT_RESPONSE, NULL };
-STATIC CHAR_T *notify_chrc_flag[] = { CHRC_FLAGS_NOTIFY, NULL };
-STATIC CHAR_T *read_chrc_flag[]   = { CHRC_FLAGS_READ, NULL };
+static char *write_chrc_flag[]  = { CHRC_FLAGS_WRITE, CHRC_FLAGS_WRITE_WITHOUT_RESPONSE, NULL };
+static char *notify_chrc_flag[] = { CHRC_FLAGS_NOTIFY, NULL };
+static char *read_chrc_flag[]   = { CHRC_FLAGS_READ, NULL };
 
-VOID_T uuid_to_string(TKL_BLE_UUID_T *uuid, CHAR_T *str, size_t n)
+void uuid_to_string(TKL_BLE_UUID_T *uuid, char *str, size_t n)
 {
-    UCHAR_T *uuid128;
+    uint8_t *uuid128;
 
     switch (uuid->uuid_type) {
     case TKL_BLE_UUID_TYPE_16:
@@ -133,14 +133,14 @@ VOID_T uuid_to_string(TKL_BLE_UUID_T *uuid, CHAR_T *str, size_t n)
     }
 }
 
-STATIC INT_T chrc_props(sd_bus *bus, CONST CHAR_T *path, CONST CHAR_T *interface,
-                        CONST CHAR_T *property, sd_bus_message *reply, VOID_T *userdata,
+static int chrc_props(sd_bus *bus, const char *path, const char *interface,
+                        const char *property, sd_bus_message *reply, void *userdata,
                         sd_bus_error *ret_error)
 {
     local_chrc_t *chrc = (local_chrc_t *)userdata;
 
     if (strcmp(property, "UUID") == 0) {
-        UCHAR_T uuid[37] = { 0 };
+        uint8_t uuid[37] = { 0 };
         uuid_to_string(&(chrc->para->char_uuid), uuid, 37);
         return sd_bus_message_append(reply, "s", uuid);
     }
@@ -174,8 +174,8 @@ STATIC INT_T chrc_props(sd_bus *bus, CONST CHAR_T *path, CONST CHAR_T *interface
     return -2;
 }
 
-STATIC INT_T chrc_set_handle(sd_bus *bus, CONST CHAR_T *path, CONST CHAR_T *interface,
-                             CONST CHAR_T *property, sd_bus_message *reply, VOID_T *userdata,
+static int chrc_set_handle(sd_bus *bus, const char *path, const char *interface,
+                             const char *property, sd_bus_message *reply, void *userdata,
                              sd_bus_error *ret_error)
 {
     local_chrc_t *chrc = (local_chrc_t *)userdata;
@@ -187,11 +187,11 @@ STATIC INT_T chrc_set_handle(sd_bus *bus, CONST CHAR_T *path, CONST CHAR_T *inte
     return -2;
 }
 
-STATIC INT_T chrc_readvalue(sd_bus_message *m, VOID_T *userdata, sd_bus_error *ret_error)
+static int chrc_readvalue(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
 {
     local_chrc_t *chrc = (local_chrc_t *)userdata;
     sd_bus_message *reply;
-    INT_T op_ret;
+    int op_ret;
 
     IF_FAIL_RETURN(sd_bus_message_new_method_return(m, &reply));
     IF_FAIL_RETURN(sd_bus_message_append_array(reply, 'y', chrc->data, chrc->data_len));
@@ -199,14 +199,14 @@ STATIC INT_T chrc_readvalue(sd_bus_message *m, VOID_T *userdata, sd_bus_error *r
     return sd_bus_send(sd_bus_message_get_bus(m), reply, NULL);
 }
 
-STATIC INT_T chrc_writevalue(sd_bus_message *m, VOID_T *userdata, sd_bus_error *ret_error)
+static int chrc_writevalue(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
 {
-    BYTE_T *tmp_data   = NULL;
+    int8_t *tmp_data   = NULL;
     local_chrc_t *chrc = (local_chrc_t *)userdata;
-    INT_T op_ret;
+    int op_ret;
 
     IF_FAIL_RETURN(sd_bus_message_has_signature(m, "aya{sv}"));
-    IF_FAIL_RETURN(sd_bus_message_read_array(m, 'y', (CONST VOID_T **)&tmp_data, &chrc->data_len));
+    IF_FAIL_RETURN(sd_bus_message_read_array(m, 'y', (const void **)&tmp_data, &chrc->data_len));
 
     if (chrc->data_len > 512) {
         chrc->data_len = 512;
@@ -232,7 +232,7 @@ STATIC INT_T chrc_writevalue(sd_bus_message *m, VOID_T *userdata, sd_bus_error *
     return sd_bus_reply_method_return(m, "");
 }
 
-STATIC INT_T chrc_startnotify(sd_bus_message *m, VOID_T *userdata, sd_bus_error *ret_error)
+static int chrc_startnotify(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
 {
     local_chrc_t *chrc = (local_chrc_t *)userdata;
     chrc->notifying    = TRUE;
@@ -240,7 +240,7 @@ STATIC INT_T chrc_startnotify(sd_bus_message *m, VOID_T *userdata, sd_bus_error 
     return sd_bus_reply_method_return(m, "");
 }
 
-STATIC INT_T chrc_stopnotify(sd_bus_message *m, VOID_T *userdata, sd_bus_error *ret_error)
+static int chrc_stopnotify(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
 {
     local_chrc_t *chrc = (local_chrc_t *)userdata;
     chrc->notifying    = FALSE;
@@ -248,14 +248,14 @@ STATIC INT_T chrc_stopnotify(sd_bus_message *m, VOID_T *userdata, sd_bus_error *
     return sd_bus_reply_method_return(m, "");
 }
 
-STATIC INT_T svc_props(sd_bus *bus, CONST CHAR_T *path, CONST CHAR_T *interface,
-                       CONST CHAR_T *property, sd_bus_message *reply, VOID_T *userdata,
+static int svc_props(sd_bus *bus, const char *path, const char *interface,
+                       const char *property, sd_bus_message *reply, void *userdata,
                        sd_bus_error *ret_error)
 {
     local_service_t *service = (local_service_t *)userdata;
 
     if (strcmp(property, "UUID") == 0) {
-        UCHAR_T uuid[37] = { 0 };
+        uint8_t uuid[37] = { 0 };
         uuid_to_string(&(service->svc_uuid), uuid, 37);
         return sd_bus_message_append(reply, "s", uuid);
     }
@@ -275,8 +275,8 @@ STATIC INT_T svc_props(sd_bus *bus, CONST CHAR_T *path, CONST CHAR_T *interface,
     return -2;
 }
 
-STATIC INT_T svc_set_handle(sd_bus *bus, CONST CHAR_T *path, CONST CHAR_T *interface,
-                            CONST CHAR_T *property, sd_bus_message *reply, VOID_T *userdata,
+static int svc_set_handle(sd_bus *bus, const char *path, const char *interface,
+                            const char *property, sd_bus_message *reply, void *userdata,
                             sd_bus_error *ret_error)
 {
     local_service_t *service = (local_service_t *)userdata;
@@ -288,7 +288,7 @@ STATIC INT_T svc_set_handle(sd_bus *bus, CONST CHAR_T *path, CONST CHAR_T *inter
     return -2;
 }
 
-STATIC CONST sd_bus_vtable svc_vtable[] = {
+static const sd_bus_vtable svc_vtable[] = {
     SD_BUS_VTABLE_START(0),
     SD_BUS_PROPERTY("UUID", "s", svc_props, 0, SD_BUS_VTABLE_PROPERTY_CONST),
     SD_BUS_PROPERTY("Primary", "b", svc_props, 0, SD_BUS_VTABLE_PROPERTY_CONST),
@@ -298,7 +298,7 @@ STATIC CONST sd_bus_vtable svc_vtable[] = {
     SD_BUS_VTABLE_END
 };
 
-STATIC CONST sd_bus_vtable chrc_vtable[] = {
+static const sd_bus_vtable chrc_vtable[] = {
     SD_BUS_VTABLE_START(0),
     SD_BUS_PROPERTY("UUID", "s", chrc_props, 0, SD_BUS_VTABLE_PROPERTY_CONST),
     SD_BUS_PROPERTY("Service", "o", chrc_props, 0, SD_BUS_VTABLE_PROPERTY_CONST),
@@ -319,16 +319,16 @@ STATIC CONST sd_bus_vtable chrc_vtable[] = {
     SD_BUS_VTABLE_END
 };
 
-STATIC INT_T copy_str(VOID_T **dst, CONST VOID_T *src)
+static int copy_str(void **dst, const void *src)
 {
-    INT_T len;
+    int len;
 
     if (!src || *dst) {
         return -1;
     }
 
     len  = strlen(src);
-    *dst = (VOID_T *)malloc(len + 1);
+    *dst = (void *)malloc(len + 1);
     if (!dst) {
         return -1;
     }
@@ -338,11 +338,11 @@ STATIC INT_T copy_str(VOID_T **dst, CONST VOID_T *src)
     return len;
 }
 
-STATIC INT_T properties_changed(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
+static int properties_changed(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
 {
-    INT_T op_ret;
-    CHAR_T *iface;
-    CHAR_T *key;
+    int op_ret;
+    char *iface;
+    char *key;
     device_t *device = (device_t *)userdata;
 
     IF_FAIL_RETURN(sd_bus_message_has_signature(m, "sa{sv}as"));
@@ -361,7 +361,7 @@ STATIC INT_T properties_changed(sd_bus_message *m, void *userdata, sd_bus_error 
         } else if (strcmp(key, "Name") == 0) {
             IF_FAIL_RETURN(sd_bus_message_read(m, "v", "s", &device->name));
         } else if (strcmp(key, "Connected") == 0) {
-            INT_T temp = 0;
+            int temp = 0;
             IF_FAIL_RETURN(sd_bus_message_read(m, "v", "b", &temp));
             if (temp) {
                 device->connected = temp;
@@ -386,10 +386,10 @@ STATIC INT_T properties_changed(sd_bus_message *m, void *userdata, sd_bus_error 
     return op_ret;
 }
 
-STATIC INT_T add_device(sd_bus_message *m, CONST CHAR_T *obj)
+static int add_device(sd_bus_message *m, const char *obj)
 {
-    INT_T op_ret;
-    CONST CHAR_T *key;
+    int op_ret;
+    const char *key;
     device_t *device = NULL;
 
     device = (device_t *)malloc(sizeof(device_t));
@@ -398,7 +398,7 @@ STATIC INT_T add_device(sd_bus_message *m, CONST CHAR_T *obj)
     }
     memset(device, 0x00, sizeof(device_t));
 
-    if (copy_str((VOID_T **)&device->path, obj) < 0) {
+    if (copy_str((void **)&device->path, obj) < 0) {
         free(device);
         device = NULL;
 
@@ -442,14 +442,14 @@ STATIC INT_T add_device(sd_bus_message *m, CONST CHAR_T *obj)
     return op_ret;
 }
 
-STATIC INT_T add_service(sd_bus_message *m, CONST CHAR_T *obj)
+static int add_service(sd_bus_message *m, const char *obj)
 {
     device_t *device   = NULL;
     service_t *service = NULL;
     SLIST_HEAD *pos    = NULL;
     BOOL_T is_found    = FALSE;
-    INT_T op_ret;
-    CONST CHAR_T *key;
+    int op_ret;
+    const char *key;
 
     // 寻找设备挂载点
     SLIST_FOR_EACH_ENTRY(device, device_t, pos, &ble_devices, node)
@@ -469,7 +469,7 @@ STATIC INT_T add_service(sd_bus_message *m, CONST CHAR_T *obj)
         return -1;
     }
     memset(service, 0x00, sizeof(service_t));
-    if (copy_str((VOID_T **)&service->path, obj) < 0) {
+    if (copy_str((void **)&service->path, obj) < 0) {
         free(service);
         service = NULL;
 
@@ -504,15 +504,15 @@ STATIC INT_T add_service(sd_bus_message *m, CONST CHAR_T *obj)
     return op_ret;
 }
 
-STATIC INT_T add_chrc(sd_bus_message *m, CONST CHAR_T *obj)
+static int add_chrc(sd_bus_message *m, const char *obj)
 {
     device_t *device   = NULL;
     chrc_t *chrc       = NULL;
     service_t *service = NULL;
     SLIST_HEAD *pos    = NULL;
     BOOL_T is_found    = FALSE;
-    INT_T op_ret;
-    CONST CHAR_T *key;
+    int op_ret;
+    const char *key;
 
     // 寻找设备挂载点
     SLIST_FOR_EACH_ENTRY(device, device_t, pos, &ble_devices, node)
@@ -543,7 +543,7 @@ STATIC INT_T add_chrc(sd_bus_message *m, CONST CHAR_T *obj)
         return -1;
     }
     memset(chrc, 0x00, sizeof(chrc_t));
-    if (copy_str((VOID_T **)&chrc->path, obj) < 0) {
+    if (copy_str((void **)&chrc->path, obj) < 0) {
         free(chrc);
         chrc = NULL;
 
@@ -559,7 +559,7 @@ STATIC INT_T add_chrc(sd_bus_message *m, CONST CHAR_T *obj)
             IF_FAIL_RETURN_FREE(sd_bus_message_read(m, "v", "s", &chrc->uuid), chrc);
         } else if (strcmp(key, "Value") == 0) {
             IF_FAIL_RETURN_FREE(sd_bus_message_enter_container(m, 'v', "ay"), chrc);
-            IF_FAIL_RETURN_FREE(sd_bus_message_read_array(m, 'y', (CONST VOID_T **)&chrc->data, &chrc->data_len), chrc);
+            IF_FAIL_RETURN_FREE(sd_bus_message_read_array(m, 'y', (const void **)&chrc->data, &chrc->data_len), chrc);
             IF_FAIL_RETURN_FREE(sd_bus_message_exit_container(m), chrc);
         } else if (strcmp(key, "Flags") == 0) {
             IF_FAIL_RETURN_FREE(sd_bus_message_enter_container(m, 'v', "as"), chrc);
@@ -584,10 +584,10 @@ STATIC INT_T add_chrc(sd_bus_message *m, CONST CHAR_T *obj)
     return op_ret;
 }
 
-STATIC INT_T on_bt_iface_add(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
+static int on_bt_iface_add(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
 {
-    CONST CHAR_T *obj = NULL;
-    INT_T op_ret;
+    const char *obj = NULL;
+    int op_ret;
 
     IF_FAIL_RETURN(sd_bus_message_has_signature(m, "oa{sa{sv}}"));
     IF_FAIL_RETURN(sd_bus_message_read(m, "o", &obj));
@@ -600,7 +600,7 @@ STATIC INT_T on_bt_iface_add(sd_bus_message *m, void *userdata, sd_bus_error *re
     IF_FAIL_RETURN(sd_bus_message_enter_container(m, 'a', "{sa{sv}}"));
 
     while ((op_ret = sd_bus_message_enter_container(m, 'e', "sa{sv}")) > 0) {
-        CONST CHAR_T *iface = NULL;
+        const char *iface = NULL;
         bool skip           = true;
 
         IF_FAIL_RETURN(sd_bus_message_read(m, "s", &iface));
@@ -636,9 +636,9 @@ STATIC INT_T on_bt_iface_add(sd_bus_message *m, void *userdata, sd_bus_error *re
     return 0;
 }
 
-STATIC INT_T add_already_known_device(sd_bus *bus)
+static int add_already_known_device(sd_bus *bus)
 {
-    INT_T op_ret;
+    int op_ret;
     sd_bus_message *m = NULL;
 
     IF_FAIL_RETURN(sd_bus_call_method(bus, BUS_NAME, MAN_PATH, OBJECT_MANAGER_IFACE,
@@ -658,7 +658,7 @@ STATIC INT_T add_already_known_device(sd_bus *bus)
     return 0;
 }
 
-STATIC VOID_T remove_chrc(chrc_t *chrc)
+static void remove_chrc(chrc_t *chrc)
 {
     free(chrc->path);
     chrc->path = NULL;
@@ -676,7 +676,7 @@ STATIC VOID_T remove_chrc(chrc_t *chrc)
     chrc = NULL;
 }
 
-STATIC VOID_T remove_service(service_t *service)
+static void remove_service(service_t *service)
 {
     chrc_t *chrc    = NULL;
     SLIST_HEAD *pos = NULL;
@@ -696,7 +696,7 @@ STATIC VOID_T remove_service(service_t *service)
     service = NULL;
 }
 
-STATIC VOID_T remove_device(device_t *device)
+static void remove_device(device_t *device)
 {
     service_t *service = NULL;
     SLIST_HEAD *pos    = NULL;
@@ -720,14 +720,14 @@ STATIC VOID_T remove_device(device_t *device)
     device = NULL;
 }
 
-STATIC INT_T on_bt_iface_remove(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
+static int on_bt_iface_remove(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
 {
     device_t *device   = NULL;
     chrc_t *chrc       = NULL;
     service_t *service = NULL;
     SLIST_HEAD *pos    = NULL;
-    CONST CHAR_T *obj  = NULL;
-    INT_T op_ret;
+    const char *obj  = NULL;
+    int op_ret;
     BOOL_T is_found = FALSE;
 
     IF_FAIL_RETURN(sd_bus_message_has_signature(m, "oas"));
@@ -793,7 +793,7 @@ STATIC INT_T on_bt_iface_remove(sd_bus_message *m, void *userdata, sd_bus_error 
     return -2;
 }
 
-STATIC INT_T app_register_reply(sd_bus_message *m, VOID_T *userdata, sd_bus_error *ret_error)
+static int app_register_reply(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
 {
     if (sd_bus_error_is_set(ret_error)) {
         printf("Error registering: %s: %s\n", ret_error->name, ret_error->message);
@@ -802,9 +802,9 @@ STATIC INT_T app_register_reply(sd_bus_message *m, VOID_T *userdata, sd_bus_erro
     return 0;
 }
 
-STATIC INT_T gatt_init(sd_bus *bus)
+static int gatt_init(sd_bus *bus)
 {
-    INT_T op_ret = OPRT_OK;
+    int op_ret = OPRT_OK;
 
     IF_FAIL_RETURN(tkl_mutex_create_init(&ble_devices_mutex));
     IF_FAIL_RETURN_INFO(sd_bus_add_object_manager(bus, NULL, MAN_PATH), "BLE: Error adding object manager\n");
@@ -822,9 +822,9 @@ STATIC INT_T gatt_init(sd_bus *bus)
     return op_ret;
 }
 
-STATIC VOID_T *bus_task(VOID_T *arg)
+static void *bus_task(void *arg)
 {
-    INT_T r;
+    int r;
 
     while ((r = sd_bus_wait(bus, (uint64_t)-1)) >= 0) {
         while ((r = sd_bus_process(bus, NULL)) > 0) {
@@ -840,7 +840,7 @@ STATIC VOID_T *bus_task(VOID_T *arg)
     return NULL;
 }
 
-OPERATE_RET sd_bus_loop_start(VOID_T)
+OPERATE_RET sd_bus_loop_start(void)
 {
     if (0 != pthread_create(&bus_task_thId, NULL, bus_task, NULL)) {
         return OPRT_OS_ADAPTER_COM_ERROR;
@@ -849,9 +849,9 @@ OPERATE_RET sd_bus_loop_start(VOID_T)
     return OPRT_OK;
 }
 
-OPERATE_RET sd_bus_init(VOID_T)
+OPERATE_RET sd_bus_init(void)
 {
-    INT_T r;
+    int r;
 
     if ((r = sd_bus_default_system(&bus)) < 0) {
         bus = NULL;
@@ -864,7 +864,7 @@ OPERATE_RET sd_bus_init(VOID_T)
     return OPRT_OK;
 }
 
-OPERATE_RET sd_bus_deinit(VOID_T)
+OPERATE_RET sd_bus_deinit(void)
 {
     sd_bus_unref(bus);
 
@@ -873,7 +873,7 @@ OPERATE_RET sd_bus_deinit(VOID_T)
 
 OPERATE_RET sd_bus_gatts_service_add(TKL_BLE_GATTS_PARAMS_T *p_service_para)
 {
-    INT_T op_ret               = OPRT_OK;
+    int op_ret               = OPRT_OK;
     local_service_t *p_service = NULL;
     local_chrc_t *p_chrc       = NULL;
 
@@ -889,7 +889,7 @@ OPERATE_RET sd_bus_gatts_service_add(TKL_BLE_GATTS_PARAMS_T *p_service_para)
         return OPRT_OS_ADAPTER_INVALID_PARM;
     }
 
-    for (INT_T i = 0; i < p_service_para->svc_num; i++) {
+    for (int i = 0; i < p_service_para->svc_num; i++) {
         p_service = &(local_services[i]);
         memset(p_service->path, 0x00, SERVICE_CHRC_PATH_MAX_LENGTH);
         sprintf(p_service->path, "/org/bluez/service%d", i);
@@ -898,7 +898,7 @@ OPERATE_RET sd_bus_gatts_service_add(TKL_BLE_GATTS_PARAMS_T *p_service_para)
         p_service->handle = 0;
         IF_FAIL_RETURN(sd_bus_add_object_vtable(bus, NULL, p_service->path, SERVICE_INTERFACE, svc_vtable, p_service));
 
-        for (INT_T j = 0; j < p_service_para->p_service[i].char_num; j++) {
+        for (int j = 0; j < p_service_para->p_service[i].char_num; j++) {
             p_chrc = &(p_service->chrcs[j]);
             memset(p_chrc->svc_path, 0x00, SERVICE_CHRC_PATH_MAX_LENGTH);
             memcpy(p_chrc->svc_path, p_service->path, SERVICE_CHRC_PATH_MAX_LENGTH);
@@ -920,14 +920,14 @@ OPERATE_RET sd_bus_gatts_service_add(TKL_BLE_GATTS_PARAMS_T *p_service_para)
     return OPRT_OK;
 }
 
-OPERATE_RET sd_bus_gatts_value_set(USHORT_T conn_handle, USHORT_T char_handle, UCHAR_T *p_data, USHORT_T length)
+OPERATE_RET sd_bus_gatts_value_set(uint16_t conn_handle, uint16_t char_handle, uint8_t *p_data, uint16_t length)
 {
     local_service_t *p_service = NULL;
     local_chrc_t *p_chrc       = NULL;
 
-    for (INT_T i = 0; i < LOCAL_SERVICES_NUM; i++) {
+    for (int i = 0; i < LOCAL_SERVICES_NUM; i++) {
         p_service = &(local_services[i]);
-        for (INT_T j = 0; j < LOCAL_CHRCS_NUM; j++) {
+        for (int j = 0; j < LOCAL_CHRCS_NUM; j++) {
             p_chrc = &(p_service->chrcs[j]);
             if (p_chrc->para->handle == char_handle) {
                 memcpy(p_chrc->data, p_data, length);
@@ -939,14 +939,14 @@ OPERATE_RET sd_bus_gatts_value_set(USHORT_T conn_handle, USHORT_T char_handle, U
     }
 }
 
-OPERATE_RET sd_bus_gatts_value_notify(USHORT_T conn_handle, USHORT_T char_handle, UCHAR_T *p_data, USHORT_T length)
+OPERATE_RET sd_bus_gatts_value_notify(uint16_t conn_handle, uint16_t char_handle, uint8_t *p_data, uint16_t length)
 {
     local_service_t *p_service = NULL;
     local_chrc_t *p_chrc       = NULL;
 
-    for (INT_T i = 0; i < LOCAL_SERVICES_NUM; i++) {
+    for (int i = 0; i < LOCAL_SERVICES_NUM; i++) {
         p_service = &(local_services[i]);
-        for (INT_T j = 0; j < LOCAL_CHRCS_NUM; j++) {
+        for (int j = 0; j < LOCAL_CHRCS_NUM; j++) {
             p_chrc = &(p_service->chrcs[j]);
             if (p_chrc->para->handle == char_handle) {
                 if (length > 512) {
@@ -967,7 +967,7 @@ OPERATE_RET sd_bus_gatts_value_notify(USHORT_T conn_handle, USHORT_T char_handle
     return OPRT_OS_ADAPTER_NOT_SUPPORTED;
 }
 
-OPERATE_RET sd_bus_gatt_callback_register(CONST TKL_BLE_GATT_EVT_FUNC_CB gatt_evt)
+OPERATE_RET sd_bus_gatt_callback_register(const TKL_BLE_GATT_EVT_FUNC_CB gatt_evt)
 {
     g_gatt_evt_cb = gatt_evt;
 

@@ -51,7 +51,7 @@ static void __heap_init(void)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-VOID_T* tkl_system_malloc(CONST SIZE_T size)
+void* tkl_system_malloc(const SIZE_T size)
 {
     if(!s_heap_handle) {
         __heap_init();
@@ -69,7 +69,7 @@ VOID_T* tkl_system_malloc(CONST SIZE_T size)
 *
 * @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
 */
-VOID_T tkl_system_free(VOID_T* ptr)
+void tkl_system_free(void* ptr)
 {
     if(ptr) {
         tuya_mem_heap_free(s_heap_handle, ptr);
@@ -82,7 +82,7 @@ VOID_T tkl_system_free(VOID_T* ptr)
  * @param[in]       nitems      the numbers of memory block
  * @param[in]       size        the size of the memory block
  */
-VOID_T *tkl_system_calloc(size_t nitems, size_t size)
+void *tkl_system_calloc(size_t nitems, size_t size)
 {
     return tuya_mem_heap_calloc(s_heap_handle, nitems * size);
 }
@@ -93,7 +93,7 @@ VOID_T *tkl_system_calloc(size_t nitems, size_t size)
  * @param[in]       nitems      source memory address
  * @param[in]       size        the size after re-allocate
  */
-VOID_T *tkl_system_realloc(VOID_T* ptr, size_t size)
+void *tkl_system_realloc(void* ptr, size_t size)
 {
     return tuya_mem_heap_realloc(s_heap_handle, ptr, size);
 }
@@ -101,13 +101,13 @@ VOID_T *tkl_system_realloc(VOID_T* ptr, size_t size)
 /**
 * @brief Get free heap size
 *
-* @param VOID
+* @param void
 *
 * @note This API is used for getting free heap size.
 *
 * @return size of free heap
 */
-INT_T tkl_system_get_free_heap_size(VOID_T)
+int tkl_system_get_free_heap_size(void)
 {
     return tuya_mem_heap_available(s_heap_handle);
 }
@@ -121,7 +121,7 @@ INT_T tkl_system_get_free_heap_size(VOID_T)
 *
 * @return the memory address malloced
 */
-TUYA_WEAK_ATTRIBUTE VOID_T *tkl_system_memset(VOID_T* src, INT_T ch, CONST SIZE_T n)
+TUYA_WEAK_ATTRIBUTE void *tkl_system_memset(void* src, int ch, const SIZE_T n)
 {
     return memset(src, ch, n);
 }
@@ -135,7 +135,7 @@ TUYA_WEAK_ATTRIBUTE VOID_T *tkl_system_memset(VOID_T* src, INT_T ch, CONST SIZE_
 *
 * @return the memory address malloced
 */
-TUYA_WEAK_ATTRIBUTE VOID_T *tkl_system_memcpy(VOID_T* src, CONST VOID_T* dst, CONST SIZE_T n)
+TUYA_WEAK_ATTRIBUTE void *tkl_system_memcpy(void* src, const void* dst, const SIZE_T n)
 {
     return memcpy(src, dst, n);
 }
