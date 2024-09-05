@@ -43,6 +43,10 @@
 #define SIMPLE_FLASH_KV_PROTECTED_SIZE 0x1000
 #endif
 
+typedef struct {
+    char *uuid;
+    char *authkey;
+} tuya_iot_license_t;
 
 static TUYA_FILE s_flash_file = 0;
 
@@ -241,3 +245,16 @@ OPERATE_RET tkl_flash_unlock(uint32_t addr, uint32_t size)
     return OPRT_NOT_SUPPORTED;
 }
 
+/**
+* @brief tuya_iot_license_read
+*
+* @param[in] license: iot license struct pointer
+*
+* @note This API is used for read license .
+*
+* @return OPRT_OK on success. Others on error, please refer to tuya_error_code.h
+*/
+int tuya_iot_license_read(tuya_iot_license_t *license)
+{
+    return OPRT_NOT_SUPPORTED;
+}
