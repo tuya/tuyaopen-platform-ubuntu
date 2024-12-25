@@ -43,7 +43,8 @@ $(LOCAL_OUTPUT_DIR_OBJS)/%.c.o: %.c
 TUYAOS_LIB_DIR = $(LIBS_DIR)
 
 #链接选项
-LINKFLAGS = -lasan -L$(TUYAOS_LIB_DIR) $(addprefix -l, $(LIBS)) -pthread -lm  -lsystemd
+# -lasan
+LINKFLAGS = -L$(TUYAOS_LIB_DIR) $(addprefix -l, $(LIBS)) -pthread -lm  -lsystemd
 all: app_excute
 app_excute: $(LOCAL_OBJS_OUT)
 	@mkdir -p $(LOCAL_OUTPUT_DIR_OBJS)
